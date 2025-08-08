@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 import java.util.Date;
 
 @Entity
@@ -30,6 +29,5 @@ public class Candidate {
     private Date candidateBirthDate;
     @Column(nullable = false)
     private String candidatePhone;
-    @Column(nullable = false)
-    private Date candidateCreatedAt;
+    private Date candidateCreatedAt = new Date();
 }
