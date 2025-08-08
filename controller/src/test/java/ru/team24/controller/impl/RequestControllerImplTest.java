@@ -1,4 +1,4 @@
-package ru.team24.controller.Impl;
+package ru.team24.controller.impl;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class NotificationControllerImplTest {
+class RequestControllerImplTest {
 
     @BeforeEach
     void setUp() {
@@ -17,10 +17,14 @@ class NotificationControllerImplTest {
     }
 
     @Test
-    void findByNotificationId() {
+    void findByRequestId() {
     }
 
     @Test
-    void getByNotificationState() {
+    void getByUserId() {
+    }
+
+    @Test
+    void getByRequestState() {
     }
 }

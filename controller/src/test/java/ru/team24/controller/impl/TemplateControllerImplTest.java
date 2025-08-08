@@ -1,4 +1,4 @@
-package ru.team24.controller.Impl;
+package ru.team24.controller.impl;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

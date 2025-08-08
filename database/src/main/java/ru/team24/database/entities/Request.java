@@ -1,11 +1,11 @@
-package ru.team24.database.Entities;
+package ru.team24.database.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.team24.database.Enums.RequestState;
+import ru.team24.database.enums.RequestState;
 
 import java.util.Date;
 

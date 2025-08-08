@@ -1,0 +1,5 @@
+spring:
+  flyway:
+    table: schema_version  # Имя таблицы для хранения истории
+    validate-on-migrate: true  # Проверка целостности миграций
+    clean-disabled: true       # Запрет случайного удаления БД

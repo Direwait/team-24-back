@@ -4,7 +4,7 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: postgres #заглушка
+    password: 22666 #заглушка
     url: jdbc:postgresql://localhost:5432/pdbc_db #название бд-монолита, заглушка
   jpa:
     hibernate:

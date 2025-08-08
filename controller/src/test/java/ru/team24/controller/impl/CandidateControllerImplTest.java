@@ -1,4 +1,4 @@
-package ru.team24.controller.Impl;
+package ru.team24.controller.impl;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserControllerImplTest {
+class CandidateControllerImplTest {
 
     @BeforeEach
     void setUp() {
@@ -17,14 +17,10 @@ class UserControllerImplTest {
     }
 
     @Test
-    void findByUserId() {
+    void findCandidateId() {
     }
 
     @Test
-    void existsByEmail() {
-    }
-
-    @Test
-    void findAllUsers() {
+    void findAllCandidates() {
     }
 }

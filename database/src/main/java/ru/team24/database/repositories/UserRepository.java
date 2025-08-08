@@ -1,12 +1,9 @@
 package ru.team24.database.repositories;
 
-import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.team24.database.Entities.Role;
-import ru.team24.database.Entities.User;
+import ru.team24.database.entities.User;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

@@ -1,4 +1,4 @@
-package ru.team24.controller.Impl;
+package ru.team24.controller.impl;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RoleControllerImplTest {
+class NotificationControllerImplTest {
 
     @BeforeEach
     void setUp() {
@@ -17,6 +17,10 @@ class RoleControllerImplTest {
     }
 
     @Test
-    void findByRoleId() {
+    void findByNotificationId() {
+    }
+
+    @Test
+    void getByNotificationState() {
     }
 }

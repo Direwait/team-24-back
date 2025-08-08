@@ -1,4 +1,4 @@
-package ru.team24.database.Entities;
+package ru.team24.database.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
