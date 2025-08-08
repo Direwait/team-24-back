@@ -10,8 +10,6 @@ import ru.team24.controller.TemplatesController;
 @RestController
 @RequiredArgsConstructor
 public class TemplateControllerImpl implements TemplatesController {
-    private final TemplatesController templatesController;
-
 
     @Override
     public ResponseEntity<?> findTemplateById(long id) {

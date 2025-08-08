@@ -1,6 +1,5 @@
 package ru.team24.controller.impl;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class CandidateControllerImpl implements CandidateController {
-    private final CandidateController candidateController;
 
     @GetMapping("/{id}")
     @Override

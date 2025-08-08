@@ -14,8 +14,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class NotificationControllerImpl implements NotificationController {
-    private final NotificationController notificationController;
-
 
     @GetMapping("/{id}")
     @Override

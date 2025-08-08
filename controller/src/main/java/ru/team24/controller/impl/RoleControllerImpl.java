@@ -10,7 +10,6 @@ import ru.team24.controller.RoleController;
 @RestController
 @RequiredArgsConstructor
 public class RoleControllerImpl implements RoleController {
-    private final RoleController roleController;
 
     @Override
     public ResponseEntity<?> findByRoleId(long id) {

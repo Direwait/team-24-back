@@ -1,5 +1,6 @@
 package ru.team24.controller.impl;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class RequestControllerImpl implements RequestController {
-    private final RequestController requestController;
 
     @Override
     public ResponseEntity<?> findByRequestId(long id) {
