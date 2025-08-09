@@ -1,4 +1,4 @@
-﻿package ru.team24.service.interfaces;
+package ru.team24.service.interfaces;
 
 import jakarta.persistence.Column;
 import ru.team24.database.entities.Notification;
