@@ -23,4 +23,14 @@ public interface RequestController {
             summary = "Получение списка запросов-СОПД по статусу. Request State"
     )
     ResponseEntity<List<?>> getByRequestState(Enum state);
+
+    @Operation(
+            summary = "Обновление запроса-СОПД по Id"
+    )
+    ResponseEntity<?> updateRequestByRequestId(long id);
+
+    @Operation(
+            summary = "Добавление нового кандидата"
+    )
+    ResponseEntity<?> createRequest();
 }

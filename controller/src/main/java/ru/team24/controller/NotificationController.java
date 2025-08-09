@@ -18,4 +18,9 @@ public interface NotificationController {
             summary = "Список всех уведомлений по статусу. Notification State"
     )
     ResponseEntity<List<?>> getByNotificationState(Enum state);
+
+    @Operation(
+            summary = "Создание уведомления. Notification"
+    )
+    ResponseEntity<?> createNotification();
 }

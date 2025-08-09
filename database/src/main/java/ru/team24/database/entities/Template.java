@@ -11,17 +11,22 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "templates")
 public class Template {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="template_id")
-    long templateId;
+    private long templateId;
+
     @Column(nullable = false, unique = true)
-    String templateName;
+    private String templateName;
+
     @Column(nullable = false)
-    String templateSubject;
+    private String templateSubject;
+
     @Column(nullable = false)
-    String templateBody;
+    private String templateBody;
+
     @Column(nullable = false)
-    String templateText;
+    private String templateText;
 }

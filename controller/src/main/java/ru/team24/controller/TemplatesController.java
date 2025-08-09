@@ -11,4 +11,9 @@ public interface TemplatesController {
             summary = "Получение шаблона по Id"
     )
     ResponseEntity<?> findTemplateById(long id);
+
+    @Operation(
+            summary = "Изменение шаблона по Id"
+    )
+    ResponseEntity<?> updateTemplateById(long id);
 }

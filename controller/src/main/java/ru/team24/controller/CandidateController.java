@@ -19,4 +19,9 @@ public interface CandidateController {
             summary = "Список всех кандидатов"
     )
     ResponseEntity<List<?>> findAllCandidates();
+
+    @Operation(
+            summary = "Добавление нового кандидата"
+    )
+    ResponseEntity<?> addCandidate();
 }
