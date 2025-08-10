@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: team24
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 22666 #заглушка
+    url: jdbc:postgresql://localhost:5432/pdbc_db #название бд-монолита, заглушка
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: false
+      format-sql: false
+      use_sql_comments: false
+      properties:
+        hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+        #hibernate.cache.use_second_level_cache: true тут настройка кеша 2-уровня, надо будет настроить как-нибудь
+        #hibernate.cache.region.factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
+        #hibernate.javax.cache.provider: com.hazelcast.cache.HazelcastCachingProvider
+  mvc:
+    trow-exception-if-no-handler-found: false
+  web:
+    resources:
+      add-mapping: true # Локальная разработка фронтенда без nignx apache
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: logs/logs.log
+    path: /

@@ -19,19 +19,25 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "request_id")
     private long requestId;
+
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
+
     @OneToOne
     @JoinColumn(name = "candidate_id", referencedColumnName = "candidate_id", nullable = false)
     private Candidate candidate;
+
     @OneToOne
     @JoinColumn(name = "template_id", referencedColumnName = "template_id", nullable = false)
     private Template template;
+
     @Column(nullable = false, unique = true)
     private String requestToken;
+
     @Column(nullable = false)
     private RequestState requestState;
+
     private Date requestDate = new Date();
 
     public long getUserId(){

@@ -16,17 +16,22 @@ import java.util.Date;
 @NoArgsConstructor
 public class Notification {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long notificationId;
+
     @OneToOne
     @JoinColumn(name = "request_id", referencedColumnName = "request_id")
     private Request request;
+
     @Column(nullable = false)
     private String notificationText;
+
     @Column(nullable = false)
     private NotificationState notificationState;
+
     @Column(nullable = false)
     private Date notificationCreatedAt = new Date();
+
     private Date notificationReadAt;
 
 }

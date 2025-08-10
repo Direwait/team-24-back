@@ -19,17 +19,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="user_id")
     private long userId;
+
     @OneToOne
     @JoinColumn(name="role_id", referencedColumnName = "role_id", nullable = false)
     private Role roleId;
+
     @Column(nullable = false, unique = true)
     private String userMail;
+
     @Column(nullable = false)
     private String userPassword;
+
     @Column(nullable = false)
     private String userFirstName;
+
     @Column(nullable = false)
     private String userLastName;
+
     private Date userCreatedAt = new Date();
 
     public long getRoleId() {

@@ -15,7 +15,11 @@ public interface UserController {
     ResponseEntity<?> findByUserId(long id);
 
     @Operation(
-            summary = "Проверка на наличие пользователя по почте"
+            summary = "Проверка на наличие пользователя по почте",
+            description = """
+                            Я думаю почту лучше передавать через тело, либо хеш, но не
+                            напрямую через url
+                          """
     )
     ResponseEntity<?> existsByEmail(String mail);
 
