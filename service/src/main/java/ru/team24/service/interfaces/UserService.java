@@ -8,5 +8,5 @@ import java.util.List;
 public interface UserService {
     User findByUserId(long userId);
     List<User> findAllUsers();
-    void addUser(Role roleId, String userMail, String userPassword, String userFirstName, String userLastName);
+    void addUser(long roleId, String userMail, String userPassword, String userFirstName, String userLastName);
 }

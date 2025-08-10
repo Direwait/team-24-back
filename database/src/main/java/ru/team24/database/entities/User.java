@@ -22,7 +22,7 @@ public class User {
 
     @OneToOne
     @JoinColumn(name="role_id", referencedColumnName = "role_id", nullable = false)
-    private Role roleId;
+    private Role role;
 
     @Column(nullable = false, unique = true)
     private String userMail;
@@ -39,9 +39,9 @@ public class User {
     private Date userCreatedAt = new Date();
 
     public long getRoleId() {
-        return roleId.getRoleId();
+        return role.getRoleId();
     }
     public void setRoleId(long roleId) {
-        this.roleId.setRoleId(roleId);
+        this.role.setRoleId(roleId);
     }
 }
