@@ -37,6 +37,7 @@ public class SecurityConfig {
                         //.requestMatchers("/initial/add").permitAll() // Можно будет добавить создание изначального пользователя
                         .requestMatchers("/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
+
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .logout(logout -> logout
