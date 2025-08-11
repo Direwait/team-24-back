@@ -19,9 +19,9 @@ public class CandidateServiceImpl implements CandidateService {
     private final CandidateMapper candidateMapper;
     private final CandidateRepository candidateRepository;
 
-    public CandidateDto findCandidateById(long userId) {
-        var candidate = candidateRepository.findByCandidateId(userId);
-        return candidateMapper.entityToDto(candidate.orElse(null));
+
+    public Candidate findCandidateById(long userId) {
+        return  candidateRepository.findByCandidateId(userId).orElseThrow();
     }
 
     public List<CandidateDto> findAllCandidates() {

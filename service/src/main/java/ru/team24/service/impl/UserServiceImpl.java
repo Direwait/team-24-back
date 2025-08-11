@@ -21,9 +21,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public UserDto findByUserId(long userId) {
-        var user = userRepository.findById(userId).orElse(null);
-        return userMapper.userToUserDto(user);
+
+    public User findByUserId(long userId) {
+        return userRepository.findByUserId(userId).orElseThrow();
     }
 
     public List<UserDto> findAllUsers() {
