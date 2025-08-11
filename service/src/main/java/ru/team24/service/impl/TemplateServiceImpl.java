@@ -14,8 +14,9 @@ public class TemplateServiceImpl implements TemplateService {
     private final TemplateMapper templateMapper;
     private final TemplateRepository repository;
 
-    public Template findTemplateById(long templateId) {
-        return repository.findByTemplateId(templateId).orElseThrow();
+    public TemplateDto findTemplateById(long templateId) {
+        var template = repository.findById(templateId).orElse(null);
+        return templateMapper.entityToDto(template);
     }
 
     public void addTemplate(String templateName, String templateSubject, String templateBody, String templateText) {

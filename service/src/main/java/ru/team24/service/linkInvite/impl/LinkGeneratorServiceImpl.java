@@ -13,6 +13,9 @@ import ru.team24.service.interfaces.CandidateService;
 import ru.team24.service.interfaces.TemplateService;
 import ru.team24.service.interfaces.UserService;
 import ru.team24.service.linkInvite.LinkGeneratorService;
+import ru.team24.service.mapper.CandidateMapper;
+import ru.team24.service.mapper.TemplateMapper;
+import ru.team24.service.mapper.UserMapper;
 
 import java.util.UUID;
 @Slf4j
@@ -25,6 +28,9 @@ public class LinkGeneratorServiceImpl implements LinkGeneratorService {
     private final CandidateRepository candidateRepository;
     private final TemplateService templateService;
     private final UserService userService;
+    private final CandidateMapper candidateMapper;
+    private final TemplateMapper templateMapper;
+    private final UserMapper userMapper;
 
 
     @Override
@@ -36,9 +42,9 @@ public class LinkGeneratorServiceImpl implements LinkGeneratorService {
 
     @Transactional
     public String createRequest(Long candidateId, Long templateId, Long userId) {
-        Candidate candidate = candidateService.findCandidateById(candidateId);
-        var template = templateService.findTemplateById(templateId);
-        var manager = userService.findByUserId(userId);
+        Candidate candidate = candidateMapper.dtoToEntity(candidateService.findCandidateById(candidateId));
+        var template = templateMapper.dtoToEntity(templateService.findTemplateById(templateId));
+        var manager = userMapper.userDtoToUser(userService.findByUserId(userId));
         log.info("{}{}{}",candidateId,templateId,userId);
 
         String token = generateAccessToken();
