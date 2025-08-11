@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     public User findByUserId(long userId) {
-        return null;
+        return userRepository.findByUserId(userId).orElseThrow();
     }
 
     public List<User> findAllUsers() {

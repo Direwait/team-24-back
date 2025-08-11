@@ -17,7 +17,7 @@ public class CandidateServiceImpl implements CandidateService {
     private final CandidateRepository candidateRepository;
 
     public Candidate findCandidateById(long userId) {
-        return null;
+        return  candidateRepository.findByCandidateId(userId).orElseThrow();
     }
 
     public List<Candidate> findAllCandidates() {

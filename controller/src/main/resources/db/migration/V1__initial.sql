@@ -22,12 +22,12 @@ CREATE TABLE users (
 -- Создание таблицы Candidate (кандидаты)
 CREATE TABLE candidate (
     candidate_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    candidate_first_name VARCHAR(50) NOT NULL,
-    candidate_last_name VARCHAR(50) NOT NULL,
+    candidate_first_name VARCHAR(50),
+    candidate_last_name VARCHAR(50),
     candidate_father_name VARCHAR(50),
-    candidate_mail VARCHAR(100) NOT NULL,
-    candidate_birth DATE NOT NULL,
-    candidate_phone VARCHAR(20) NOT NULL,
+    candidate_mail VARCHAR(100),
+    candidate_birth_date DATE,
+    candidate_phone VARCHAR(20),
     candidate_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE request (
     candidate_id BIGINT NOT NULL REFERENCES candidate(candidate_id),
     template_id BIGINT NOT NULL REFERENCES templates(template_id),
     request_token VARCHAR(100) NOT NULL UNIQUE,
-    request_state VARCHAR(20) CHECK (request_state IN ('PENDING', 'APPROVED', 'REJECTED', 'EXPIRED')) DEFAULT 'PENDING',
+    request_state VARCHAR(20), --CHECK (request_state IN ('PENDING', 'APPROVED', 'REJECTED', 'EXPIRED')) DEFAULT 'PENDING',
     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE request (
 CREATE TABLE notification (
     notification_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     request_id BIGINT NOT NULL REFERENCES request(request_id),
-    notification_state VARCHAR(20) CHECK (notification_state IN ('SENT', 'READ', 'FAILED')) DEFAULT 'SENT',
+    notification_state VARCHAR(20), --CHECK (notification_state IN ('SENT', 'READ', 'FAILED')) DEFAULT 'SENT',
     notification_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notification_read_at TIMESTAMP NULL
 );
