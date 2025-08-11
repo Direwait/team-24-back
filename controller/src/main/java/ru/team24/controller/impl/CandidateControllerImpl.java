@@ -1,6 +1,8 @@
 package ru.team24.controller.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.CandidateController;
@@ -19,17 +21,16 @@ public class CandidateControllerImpl implements CandidateController {
     @GetMapping("/{candidateId}")
     @Override
     public ResponseEntity<?> findCandidateId(@PathVariable long candidateId) {
-
-        return null;
+        return new ResponseEntity<>(candidateService.findCandidateById(candidateId),HttpStatus.OK);
     }
 
     @GetMapping()
     @Override
     public ResponseEntity<List<?>> findAllCandidates() {
-        return null;
+        return new ResponseEntity<>(candidateService.findAllCandidates(),HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping("/add")
     @Override
     public ResponseEntity<?> addCandidate() {
         return null;
