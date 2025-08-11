@@ -14,7 +14,7 @@ public class TemplateServiceImpl implements TemplateService {
     private final TemplateRepository repository;
 
     public Template findTemplateById(long templateId) {
-        return null;
+        return repository.findByTemplateId(templateId).orElseThrow();
     }
 
     public void addTemplate(String templateName, String templateSubject, String templateBody, String templateText) {
