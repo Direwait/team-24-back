@@ -35,4 +35,7 @@ public class Notification {
 
     private Date notificationReadAt;
 
+    public long getRequestId() {
+        return request.getRequestId();
+    }
 }

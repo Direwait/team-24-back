@@ -24,7 +24,7 @@ public class NotificationControllerImpl implements NotificationController {
         return new ResponseEntity<>(notificationService.finByNotificationId(notificationId), HttpStatus.OK);
     }
 
-    @GetMapping("/{notificationState}")
+    @GetMapping("/getByState/{notificationState}")
     public ResponseEntity<List<?>> getByNotificationState(@PathVariable String notificationState) {
         return new ResponseEntity<>(notificationService.finByNotificationState(notificationState), HttpStatus.OK);
     }

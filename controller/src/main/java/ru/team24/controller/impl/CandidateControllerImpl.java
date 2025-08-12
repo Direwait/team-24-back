@@ -28,7 +28,7 @@ public class CandidateControllerImpl implements CandidateController {
         return new ResponseEntity<>(candidateService.findAllCandidates(),HttpStatus.OK);
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<?> addCandidate(@RequestBody CandidateDto candidate) {
         candidateService.addCandidate(candidate);
         return new ResponseEntity<>(HttpStatus.CREATED);

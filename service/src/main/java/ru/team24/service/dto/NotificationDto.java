@@ -18,7 +18,7 @@ public class NotificationDto {
     private long notificationId;
 
     @NotNull(message = "Request information is required")
-    private RequestDto request;
+    private long requestId;
 
     @NotBlank(message = "Notification text is required")
     @Size(max = 1000, message = "Notification text must not exceed 1000 characters")
@@ -27,7 +27,6 @@ public class NotificationDto {
     @NotNull(message = "Notification state is required")
     private NotificationState notificationState;
 
-    @NotNull(message = "Creation date is required")
     @PastOrPresent(message = "Creation date must be in the past or present")
     private Date notificationCreatedAt;
 

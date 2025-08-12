@@ -34,15 +34,15 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public void createNotification(NotificationDto notificationDto) {
-        var request = requestRepository.findById(notificationDto.getNotificationId()).orElseThrow();
+        var notification = notificationMapper.dtoToEntity(notificationDto);
+        var request = notification.getRequest();
         try {
-            emailService.sendEmail("noreply",
+           /* emailService.sendEmail("noreply",
                     notificationDto.getNotificationText(),
-                    request.getCandidate().getCandidateMail());
+                    request.getCandidate().getCandidateMail());*/ // раскомментить по нужде
         } catch (Exception e) {
             notificationDto.setNotificationState(NotificationState.FAILED);
         }
-        var notification = notificationMapper.dtoToEntity(notificationDto);
         notification.setNotificationId(null);// для авто-генерации ID
         notificationRepository.save(notification);
     }

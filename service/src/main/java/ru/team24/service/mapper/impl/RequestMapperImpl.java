@@ -1,5 +1,6 @@
 package ru.team24.service.mapper.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.team24.database.entities.Request;
@@ -10,6 +11,7 @@ import ru.team24.service.dto.RequestDto;
 import ru.team24.service.mapper.RequestMapper;
 
 @Component
+@RequiredArgsConstructor
 public class RequestMapperImpl implements RequestMapper {
     @Autowired
     UserRepository userRepository;

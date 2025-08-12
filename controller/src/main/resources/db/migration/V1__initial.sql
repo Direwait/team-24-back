@@ -1,5 +1,5 @@
 -- Создание таблицы Roles (роли пользователей)
-CREATE TABLE roles (
+CREATE TABLE if not exists roles (
     role_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     role_name VARCHAR(50) NOT NULL,
     viewing_my_requests BOOLEAN DEFAULT FALSE,
@@ -9,7 +9,7 @@ CREATE TABLE roles (
 );
 
 -- Создание таблицы User (пользователи)
-CREATE TABLE users (
+CREATE TABLE if not exists users (
     user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     role_id BIGINT NOT NULL REFERENCES roles(role_id),
     user_mail VARCHAR(100) NOT NULL UNIQUE,
@@ -20,7 +20,7 @@ CREATE TABLE users (
 );
 
 -- Создание таблицы Candidate (кандидаты)
-CREATE TABLE candidate (
+CREATE TABLE if not exists candidate (
     candidate_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     candidate_first_name VARCHAR(50),
     candidate_last_name VARCHAR(50),
@@ -32,7 +32,7 @@ CREATE TABLE candidate (
 );
 
 -- Создание таблицы Template (шаблоны писем и уведомленй,)
-CREATE TABLE templates (
+CREATE TABLE if not exists templates (
     template_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     template_name VARCHAR(100) NOT NULL UNIQUE,
     template_subject VARCHAR(255) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE templates (
 );
 
 -- Создание таблицы Request (запросы)
-CREATE TABLE request (
+CREATE TABLE if not exists request (
     request_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(user_id),
     candidate_id BIGINT NOT NULL REFERENCES candidate(candidate_id),
@@ -52,9 +52,10 @@ CREATE TABLE request (
 );
 
 -- Создание таблицы Notification (уведомления)
-CREATE TABLE notification (
+CREATE TABLE if not exists notification (
     notification_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     request_id BIGINT NOT NULL REFERENCES request(request_id),
+    notification_text text NOT NULL,
     notification_state VARCHAR(20), --CHECK (notification_state IN ('SENT', 'READ', 'FAILED')) DEFAULT 'SENT',
     notification_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notification_read_at TIMESTAMP NULL
