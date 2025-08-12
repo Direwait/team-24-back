@@ -4,6 +4,8 @@ package ru.team24.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.team24.service.dto.CandidateDto;
 
 import java.util.List;
 
@@ -23,5 +25,5 @@ public interface CandidateController {
     @Operation(
             summary = "Добавление нового кандидата"
     )
-    ResponseEntity<?> addCandidate();
+    ResponseEntity<?> addCandidate(@RequestBody CandidateDto candidate);
 }

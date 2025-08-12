@@ -2,12 +2,13 @@ package ru.team24.controller.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.UserController;
+import ru.team24.service.dto.UserDto;
 import ru.team24.service.interfaces.UserService;
 
 import java.util.List;
@@ -16,26 +17,31 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
-
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/userId")
-    @Override
+    @GetMapping("/{userId}")
     public ResponseEntity<?> findByUserId(@PathVariable long userId) {
-
-        return null;
+        return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/{mail}")
-    @Override
+    @GetMapping("/exists/{mail}")
     public ResponseEntity<?> existsByEmail(@PathVariable String mail) {
-
-        return null;
+        if(userService.existsByUserMail(mail)){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping()
-    @Override
     public ResponseEntity<List<?>> findAllUsers() {
-        return null;
+        return new ResponseEntity<>(userService.findAllUsers(), HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> addUser(@RequestBody UserDto userDto) {
+        userDto.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
+        userService.addUser(userDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

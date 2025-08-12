@@ -17,7 +17,7 @@ import java.util.Date;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long notificationId;
+    private Long notificationId;
 
     @OneToOne
     @JoinColumn(name = "request_id", referencedColumnName = "request_id")
@@ -27,6 +27,7 @@ public class Notification {
     private String notificationText;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private NotificationState notificationState;
 
     @Column(nullable = false)
@@ -34,4 +35,7 @@ public class Notification {
 
     private Date notificationReadAt;
 
+    public long getRequestId() {
+        return request.getRequestId();
+    }
 }

@@ -2,8 +2,7 @@ package ru.team24.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.team24.database.dto.RoleDto;
-import ru.team24.database.entities.Role;
+import ru.team24.service.dto.RoleDto;
 import ru.team24.database.repositories.RoleRepository;
 import ru.team24.service.interfaces.RoleService;
 import ru.team24.service.mapper.RoleMapper;

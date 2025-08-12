@@ -3,6 +3,9 @@ package ru.team24.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.team24.service.dto.RequestDto;
 
 import java.util.List;
 
@@ -22,15 +25,15 @@ public interface RequestController {
     @Operation(
             summary = "Получение списка запросов-СОПД по статусу. Request State"
     )
-    ResponseEntity<List<?>> getByRequestState(Enum state);
+    ResponseEntity<List<?>> getByRequestState(String state);
 
     @Operation(
             summary = "Обновление запроса-СОПД по Id"
     )
-    ResponseEntity<?> updateRequestByRequestId(long id);
+    ResponseEntity<?> updateRequestByRequestId(long requestId, RequestDto requestDto);
 
     @Operation(
             summary = "Добавление нового кандидата"
     )
-    ResponseEntity<?> createRequest();
+    ResponseEntity<?> createRequest(@RequestBody RequestDto requestDto);
 }

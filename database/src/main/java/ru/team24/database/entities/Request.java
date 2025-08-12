@@ -16,7 +16,7 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
-    private long requestId;
+    private Long requestId;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
@@ -34,6 +34,7 @@ public class Request {
     private String requestToken;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RequestState requestState;
 
     private Date requestDate = new Date();
@@ -41,14 +42,8 @@ public class Request {
     public long getUserId(){
         return user.getUserId();
     }
-    public void setUserId(long userId){
-        user.setUserId(userId);
-    }
     public long getCandidateId(){
         return candidate.getCandidateId();
-    }
-    public void setCandidateId(long candidateId){
-        candidate.setCandidateId(candidateId);
     }
     public long getTemplateId(){
         return template.getTemplateId();

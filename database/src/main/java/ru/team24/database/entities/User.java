@@ -16,9 +16,9 @@ import java.util.Date;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_id")
-    private long userId;
+    private Long userId;
 
     @OneToOne
     @JoinColumn(name="role_id", referencedColumnName = "role_id", nullable = false)
@@ -40,8 +40,5 @@ public class User {
 
     public long getRoleId() {
         return role.getRoleId();
-    }
-    public void setRoleId(long roleId) {
-        this.role.setRoleId(roleId);
     }
 }

@@ -1,4 +1,4 @@
-package ru.team24.database.dto;
+package ru.team24.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class UserDto {
 
     private long userId;
 
-    private RoleDto role;
+    private long roleId;
 
     private String userMail;
 

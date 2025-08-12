@@ -1,12 +1,9 @@
 package ru.team24.service.interfaces;
 
-import ru.team24.database.dto.TemplateDto;
-import ru.team24.database.entities.Template;
+import ru.team24.service.dto.TemplateDto;
 
 public interface TemplateService {
     TemplateDto findTemplateById(long templateId);
-    void addTemplate(String templateName,
-                     String templateSubject,
-                     String templateBody,
-                     String templateText);
+    void updateTemplateById(long templateId, TemplateDto templateDto);
+    void addTemplate(TemplateDto templateDto);
 }

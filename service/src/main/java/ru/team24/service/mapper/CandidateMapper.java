@@ -2,7 +2,7 @@ package ru.team24.service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.team24.database.dto.CandidateDto;
+import ru.team24.service.dto.CandidateDto;
 import ru.team24.database.entities.Candidate;
 
 @Mapper(componentModel = "spring")

@@ -2,9 +2,13 @@ package ru.team24.controller.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.RequestController;
+import ru.team24.service.dto.RequestDto;
 import ru.team24.service.interfaces.RequestService;
 
 import java.util.List;
@@ -13,39 +17,32 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class RequestControllerImpl implements RequestController {
-
     private final RequestService requestService;
 
     @GetMapping("/{requestId}")
-    @Override
     public ResponseEntity<?> findByRequestId(@PathVariable long requestId) {
-
-        return null;
+        return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    @Override
+    @GetMapping("/getByUserId/{userId}")
     public ResponseEntity<?> getByUserId(@PathVariable long userId) {
-
-        return null;
+        return new ResponseEntity<>(requestService.getByUserId(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/{requestState}")
-    @Override
-    public ResponseEntity<List<?>> getByRequestState(@PathVariable Enum requestState) {
-
-        return null;
+    @GetMapping("/getByState/{requestState}")
+    public ResponseEntity<List<?>> getByRequestState(@PathVariable String requestState) {
+        return new ResponseEntity<>(requestService.getByRequestState(requestState), HttpStatus.OK);
     }
 
-    @PatchMapping("/{requestId}")
-    @Override
-    public ResponseEntity<?> updateRequestByRequestId(@PathVariable long requestId) {
-        return null;
+    @PatchMapping("/update/{requestId}")
+    public ResponseEntity<?> updateRequestByRequestId(@PathVariable long requestId, @RequestBody RequestDto requestDto) {
+        requestService.updateRequestByRequestId(requestId, requestDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping()
-    @Override
-    public ResponseEntity<?> createRequest() {
-        return null;
+    public ResponseEntity<?> createRequest(@RequestBody RequestDto requestDto) {
+        requestService.createRequest(requestDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
