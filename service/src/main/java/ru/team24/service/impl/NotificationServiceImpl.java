@@ -43,7 +43,7 @@ public class NotificationServiceImpl implements NotificationService {
             notificationDto.setNotificationState(NotificationState.FAILED);
         }
         var notification = notificationMapper.dtoToEntity(notificationDto);
-        notification.setNotificationId(null);//transfer to mapper
+        notification.setNotificationId(null);// для авто-генерации ID
         notificationRepository.save(notification);
     }
 }

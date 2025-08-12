@@ -47,13 +47,15 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public void createRequest(RequestDto requestDto) {
-        var candidate = requestDto.getCandidate(); //fix after updating mapper
-        var template = requestDto.getTemplate();
+        var candidate = candidateRepository.findByCandidateId(requestDto.getCandidateId()).orElseThrow(); //fix after updating mapper
+        var template = templateRepository.findByTemplateId(requestDto.getTemplateId()).orElseThrow();
         try{
-            emailService.sendEmail(template.getTemplateSubject(), template.getTemplateBody(), candidate.getCandidateMail());
+           // emailService.sendEmail(template.getTemplateSubject(), template.getTemplateBody(), candidate.getCandidateMail()); Раскомментировать по надобности
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        requestRepository.save(requestMapper.dtoToEntity(requestDto));
+        var request = requestMapper.dtoToEntity(requestDto);
+        request.setRequestId(null); // для авто-генерации ID
+        requestRepository.save(request);
     }
 }

@@ -34,7 +34,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     public void addCandidate(CandidateDto candidateDto) {
         var candidate = candidateMapper.dtoToEntity(candidateDto);
-        candidate.setCandidateId(null);//transfer to mapper
+        candidate.setCandidateId(null);// для авто-генерации ID
         candidateRepository.save(candidate);
     }
 }

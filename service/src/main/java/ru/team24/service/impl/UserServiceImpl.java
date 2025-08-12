@@ -37,9 +37,7 @@ public class UserServiceImpl implements UserService {
     public void addUser(UserDto userDto) {
 
         var user = userMapper.userDtoToUser(userDto);
-        var role = roleRepository.findByRoleId(user.getRoleId()).orElseThrow();
-        user.setUserId(null);
-        user.setRole(role);
+        user.setUserId(null); // для авто-генерации ID
         userRepository.save(user);
     }
 }

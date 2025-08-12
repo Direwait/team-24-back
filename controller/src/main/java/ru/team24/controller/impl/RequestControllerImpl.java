@@ -24,17 +24,17 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/getByUserId/{userId}")
     public ResponseEntity<?> getByUserId(@PathVariable long userId) {
         return new ResponseEntity<>(requestService.getByUserId(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/{requestState}")
+    @GetMapping("/getByState/{requestState}")
     public ResponseEntity<List<?>> getByRequestState(@PathVariable String requestState) {
         return new ResponseEntity<>(requestService.getByRequestState(requestState), HttpStatus.OK);
     }
 
-    @PatchMapping("/{requestId}")
+    @PatchMapping("/update/{requestId}")
     public ResponseEntity<?> updateRequestByRequestId(@PathVariable long requestId, @RequestBody RequestDto requestDto) {
         requestService.updateRequestByRequestId(requestId, requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);

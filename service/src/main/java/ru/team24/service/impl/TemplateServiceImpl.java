@@ -29,7 +29,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     public void addTemplate(TemplateDto templateDto) {
         var template = templateMapper.dtoToEntity(templateDto);
-        template.setTemplateId(null);
+        template.setTemplateId(null); // для авто-генерации ID
         templateRepository.save(template);
     }
 }

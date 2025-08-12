@@ -23,16 +23,13 @@ public class RequestDto {
     private long requestId;
 
     @NotNull(message = "User information is required")
-    @Valid
-    private UserDto user;
+    private long userId;
 
     @NotNull(message = "Candidate information is required")
-    @Valid
-    private CandidateDto candidate;
+    private long candidateId;
 
     @NotNull(message = "Template information is required")
-    @Valid
-    private TemplateDto template;
+    private long templateId;
 
     @NotBlank(message = "Request token is required")
     @Size(min = 16, max = 64, message = "Request token must be between 16 and 64 characters")
