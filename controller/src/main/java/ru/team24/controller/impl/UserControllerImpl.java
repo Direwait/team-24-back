@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.UserController;
 import ru.team24.service.dto.UserDto;
@@ -17,13 +18,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> findByUserId(@PathVariable long userId) {
         return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/{mail}")
+    @GetMapping("/exists/{mail}")
     public ResponseEntity<?> existsByEmail(@PathVariable String mail) {
         if(userService.existsByUserMail(mail)){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -38,6 +40,7 @@ public class UserControllerImpl implements UserController {
 
     @PostMapping()
     public ResponseEntity<?> addUser(@RequestBody UserDto userDto) {
+        userDto.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
         userService.addUser(userDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

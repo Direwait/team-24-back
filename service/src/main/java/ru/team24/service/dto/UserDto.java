@@ -16,7 +16,7 @@ public class UserDto {
 
     private long userId;
 
-    private RoleDto role;
+    private long roleId;
 
     private String userMail;
 
