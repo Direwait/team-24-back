@@ -1,4 +1,4 @@
-package ru.team24.database.dto;
+package ru.team24.service.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +12,6 @@ import lombok.Setter;
 import ru.team24.database.enums.RequestState;
 
 import java.util.Date;
-import java.util.List;
 
 
 @Getter

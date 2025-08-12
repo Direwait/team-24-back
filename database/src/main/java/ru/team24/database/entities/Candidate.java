@@ -15,9 +15,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class Candidate {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="candidate_id")
-    private long candidateId;
+    private Long candidateId;
 
     @Column(nullable = false)
     private String candidateFirstName;

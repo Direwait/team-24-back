@@ -2,7 +2,7 @@ package ru.team24.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.team24.database.dto.UserDto;
+import ru.team24.service.dto.UserDto;
 import ru.team24.database.entities.Role;
 import ru.team24.database.entities.User;
 import ru.team24.database.repositories.RoleRepository;
@@ -12,7 +12,6 @@ import ru.team24.service.mapper.UserMapper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,14 +30,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream().map(userMapper::userToUserDto).toList();
     }
 
-    public void addUser(long roleId, String userMail, String userPassword, String userFirstName, String userLastName) {
-        User user = new User();
-        Optional<Role> role = roleRepository.findById(roleId);
-        role.ifPresent(user::setRole);
-        user.setUserMail(userMail);
-        user.setUserPassword(userPassword);
-        user.setUserFirstName(userFirstName);
-        user.setUserLastName(userLastName);
+    public boolean existsByUserMail(String mail) {
+        return userRepository.existsUserByUserMail(mail);
+    }
+
+    public void addUser(UserDto userDto) {
+
+        var user = userMapper.userDtoToUser(userDto);
+        var role = roleRepository.findByRoleId(user.getRoleId()).orElseThrow();
+        user.setUserId(null);
+        user.setRole(role);
         userRepository.save(user);
     }
 }

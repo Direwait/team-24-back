@@ -1,28 +1,34 @@
 package ru.team24.controller.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.team24.controller.TemplatesController;
+import ru.team24.controller.TemplateController;
+import ru.team24.service.dto.TemplateDto;
 import ru.team24.service.interfaces.TemplateService;
 
-@RequestMapping("/api/v1/templates")
+@RequestMapping("/api/v1/template")
 @RestController
 @RequiredArgsConstructor
-public class TemplateControllerImpl implements TemplatesController {
-
+public class TemplateControllerImpl implements TemplateController {
     private final TemplateService templateService;
 
     @GetMapping("/{templateId}")
-    @Override
     public ResponseEntity<?> findTemplateById(@PathVariable long templateId) {
-
-        return null;
+        return new ResponseEntity<>(templateService.findTemplateById(templateId), HttpStatus.OK);
     }
 
-    @PatchMapping("/{templatedId}")
-    @Override
-    public ResponseEntity<?> updateTemplateById(long templateId) {
-        return null;
+    @PatchMapping("/{templateId}")
+    public ResponseEntity<?> updateTemplateById(@PathVariable long templateId, @RequestBody TemplateDto templateDto) {
+        templateService.updateTemplateById(templateId, templateDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> createTemplate(@RequestBody TemplateDto templateDto) {
+        templateService.addTemplate(templateDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

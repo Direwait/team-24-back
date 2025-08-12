@@ -17,7 +17,7 @@ import java.util.Date;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long notificationId;
+    private Long notificationId;
 
     @OneToOne
     @JoinColumn(name = "request_id", referencedColumnName = "request_id")

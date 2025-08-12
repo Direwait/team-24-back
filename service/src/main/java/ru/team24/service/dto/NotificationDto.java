@@ -1,4 +1,4 @@
-package ru.team24.database.dto;
+package ru.team24.service.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

@@ -3,7 +3,7 @@ package ru.team24.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.team24.database.dto.CandidateDto;
+import ru.team24.service.dto.CandidateDto;
 import ru.team24.database.entities.Candidate;
 import ru.team24.database.repositories.CandidateRepository;
 import ru.team24.service.interfaces.CandidateService;
@@ -11,7 +11,6 @@ import ru.team24.service.mapper.CandidateMapper;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,19 +32,9 @@ public class CandidateServiceImpl implements CandidateService {
                 .toList();
     }
 
-    public void addCandidate(String candidateFirstName,
-                             String candidateLastName,
-                             String candidateFatherName,
-                             String candidateMailDate,
-                             Date candidateBirthDate,
-                             String candidatePhone) {
-        var candidate = new Candidate();
-        candidate.setCandidateFirstName(candidateFirstName);
-        candidate.setCandidateLastName(candidateLastName);
-        candidate.setCandidateFatherName(candidateFatherName);
-        candidate.setCandidateBirthDate(candidateBirthDate);
-        candidate.setCandidatePhone(candidatePhone);
+    public void addCandidate(CandidateDto candidateDto) {
+        var candidate = candidateMapper.dtoToEntity(candidateDto);
+        candidate.setCandidateId(null);//transfer to mapper
         candidateRepository.save(candidate);
-
     }
 }

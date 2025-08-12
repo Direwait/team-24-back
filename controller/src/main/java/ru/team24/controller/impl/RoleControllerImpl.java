@@ -1,6 +1,8 @@
 package ru.team24.controller.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,13 +15,11 @@ import ru.team24.service.interfaces.RoleService;
 @RestController
 @RequiredArgsConstructor
 public class RoleControllerImpl implements RoleController {
-
     private final RoleService roleService;
 
     @GetMapping("/{roleId}")
     @Override
     public ResponseEntity<?> findByRoleId(@PathVariable long roleId) {
-
-        return null;
+        return new ResponseEntity<>(roleService.findByRoleId(roleId), HttpStatus.OK);
     }
 }
