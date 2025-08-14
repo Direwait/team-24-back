@@ -23,15 +23,6 @@ spring:
     resources:
       add-mapping: true # Локальная разработка фронтенда без nignx apache
 
-#облако
-  config:
-    import: "optional:configserver:http://localhost:8888"  # URL Config Server
-  cloud:
-    config:
-      uri: http://localhost:8888
-      profile: nikita      # Используемый профиль
-    enabled: true
-
 
 logging:
   level:

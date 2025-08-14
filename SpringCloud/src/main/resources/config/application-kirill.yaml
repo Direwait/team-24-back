@@ -4,8 +4,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: 22666 #заглушка
-    url: jdbc:postgresql://localhost:5432/pdbc_db #название бд-монолита, заглушка
+    password: postgres #заглушка
+    url: jdbc:postgresql://localhost:5431/postgres #название бд-монолита, заглушка
   jpa:
     hibernate:
       ddl-auto: none
@@ -22,15 +22,6 @@ spring:
   web:
     resources:
       add-mapping: true # Локальная разработка фронтенда без nignx apache
-
-#облако
-  config:
-    import: "optional:configserver:http://localhost:8888"  # URL Config Server
-  cloud:
-    config:
-      uri: http://localhost:8888
-      profile: nikita      # Используемый профиль
-    enabled: true
 
 
 logging:

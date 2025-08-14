@@ -3,7 +3,6 @@ package ru.team24.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.team24.service.dto.NotificationDto;
-import ru.team24.database.entities.Notification;
 import ru.team24.database.enums.NotificationState;
 import ru.team24.database.repositories.NotificationRepository;
 import ru.team24.database.repositories.RequestRepository;
@@ -11,9 +10,7 @@ import ru.team24.service.interfaces.EmailService;
 import ru.team24.service.interfaces.NotificationService;
 import ru.team24.service.mapper.NotificationMapper;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
