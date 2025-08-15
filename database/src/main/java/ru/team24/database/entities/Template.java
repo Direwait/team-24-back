@@ -15,18 +15,14 @@ import lombok.Setter;
 public class Template {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="template_id")
+    @Column(name = "template_id")
     private Long templateId;
 
-    @Column(nullable = false, unique = true)
     private String templateName;
 
-    @Column(nullable = false)
     private String templateSubject;
 
-    @Column(nullable = false)
     private String templateBody;
 
-    @Column(nullable = false)
     private String templateText;
 }

@@ -30,10 +30,8 @@ public class Request {
     @JoinColumn(name = "template_id", referencedColumnName = "template_id", nullable = false)
     private Template template;
 
-    @Column(nullable = false, unique = true)
     private String requestToken;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RequestState requestState;
 
