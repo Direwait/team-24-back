@@ -14,8 +14,10 @@ public interface SopdMapper {
     Sopd dtoToEntity(SopdDto dto);
 
     @Mapping(source = "sopdCreatedAt", target = "sopdCreatedAt")
+    @Mapping(source = "user.userId", target = "userId")
     SopdDto entityToDto(Sopd entity);
 
     @Mapping(target = "sopdId", ignore = true)
+    @Mapping(target = "user", ignore = true)
     void updateFromDto(SopdDto sopdDto, @MappingTarget Sopd sopd);
 }
