@@ -19,22 +19,27 @@ public class Candidate {
     @Column(name="candidate_id")
     private Long candidateId;
 
-    @Column(nullable = false)
+    @Column(name = "candidate_first_name", nullable = false)
     private String candidateFirstName;
 
-    @Column(nullable = false)
+    @Column(name= "candidate_last_name", nullable = false)
     private String candidateLastName;
 
+    @Column(name = "candidate_father_name")
     private String candidateFatherName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "candidate_mail", nullable = false, unique = true)
     private String candidateMail;
 
-    @Column(nullable = false)
+    @Column(name = "candidate_birth_date", nullable = false)
     private Date candidateBirthDate;
 
-    @Column(nullable = false)
+    @Column(name = "candidate_phone", nullable = false)
     private String candidatePhone;
 
+    @Column(name = "candidate_created_at")
     private Date candidateCreatedAt = new Date();
+
+    @Column(name = "candidate_is_active")
+    private boolean candidateIsActive = true;
 }

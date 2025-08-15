@@ -1,7 +1,6 @@
 package ru.team24.controller.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +13,13 @@ import ru.team24.service.interfaces.TemplateService;
 @RequiredArgsConstructor
 public class TemplateControllerImpl implements TemplateController {
     private final TemplateService templateService;
+
+    @GetMapping("/recent")
+    @Override
+    public ResponseEntity<TemplateDto> findRecentTemplate() {
+        var recentTemplate = templateService.findRecentTemplate();
+        return ResponseEntity.ok(recentTemplate);
+    }
 
     @GetMapping("/{templateId}")
     public ResponseEntity<?> findTemplateById(@PathVariable long templateId) {
@@ -30,5 +36,19 @@ public class TemplateControllerImpl implements TemplateController {
     public ResponseEntity<?> createTemplate(@RequestBody TemplateDto templateDto) {
         templateService.addTemplate(templateDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    @Override
+    public ResponseEntity<Void> deleteTemplate(@PathVariable long id) {
+        templateService.deleteTemplate(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Override
+    public ResponseEntity<Void> deleteTemplateReal(@PathVariable long id) {
+        templateService.deleteTemplateReal(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -16,7 +16,8 @@ CREATE TABLE if not exists users (
     user_password VARCHAR(255) NOT NULL,
     user_first_name VARCHAR(50) NOT NULL,
     user_last_name VARCHAR(50) NOT NULL,
-    user_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    user_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_is_active BOOLEAN DEFAULT TRUE
 );
 
 -- Создание таблицы Candidate (кандидаты)
@@ -28,16 +29,30 @@ CREATE TABLE if not exists candidate (
     candidate_mail VARCHAR(100),
     candidate_birth_date DATE,
     candidate_phone VARCHAR(20),
-    candidate_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    candidate_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    candidate_is_active BOOLEAN DEFAULT TRUE
 );
 
--- Создание таблицы Template (шаблоны писем и уведомленй,)
+-- Создание таблицы Template (шаблоны писем)
 CREATE TABLE if not exists templates (
     template_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id BIGINT REFERENCES users(user_id),
     template_name VARCHAR(100) NOT NULL UNIQUE,
     template_subject VARCHAR(255) NOT NULL,
     template_body TEXT NOT NULL,
-    template_text TEXT NOT NULL
+    template_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    candidate_updated_at TIMESTAMP,
+    template_is_active BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE if not exists sopd (
+    sopd_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id BIGINT REFERENCES users(user_id),
+    sopd_text TEXT NOT NULL,
+    sopd_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    sopd_updated_at TIMESTAMP,
+    sopd_last_review TIMESTAMP,
+    sopd_is_active BOOLEAN DEFAULT TRUE
 );
 
 -- Создание таблицы Request (запросы)
@@ -46,9 +61,11 @@ CREATE TABLE if not exists request (
     user_id BIGINT NOT NULL REFERENCES users(user_id),
     candidate_id BIGINT NOT NULL REFERENCES candidate(candidate_id),
     template_id BIGINT NOT NULL REFERENCES templates(template_id),
+    sopd_id BIGINT REFERENCES sopd(sopd_id),
     request_token VARCHAR(100) NOT NULL UNIQUE,
     request_state VARCHAR(20), --CHECK (request_state IN ('PENDING', 'APPROVED', 'REJECTED', 'EXPIRED')) DEFAULT 'PENDING',
-    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    request_is_active BOOLEAN DEFAULT TRUE
 );
 
 -- Создание таблицы Notification (уведомления)

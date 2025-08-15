@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 
 @Getter
 @Setter
@@ -20,5 +22,9 @@ public class TemplateDto {
 
     private String templateBody;
 
-    private String templateText;
+    private Date templateCreatedAt;
+
+    private Date templateUpdatedAt;
+
+    private boolean templateIsActive;
 }

@@ -45,4 +45,6 @@ public class CandidateDto {
     private String candidatePhone;
 
     private Date candidateCreatedAt;
+
+    private boolean candidateIsActive;
 }
