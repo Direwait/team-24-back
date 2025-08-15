@@ -1,21 +1,11 @@
-server:
-  port: 8080
-
 spring:
-  profiles:
-    active: default #активная конфигурация
-
-  config:
-    import: "optional:configserver:http://localhost:8888"  # URL Config Server
-    enabled: false
-
   application:
     name: team24
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    username: postgres
+    password: 22666 #заглушка
+    url: jdbc:postgresql://localhost:5432/pdbc_db #название бд-монолита, заглушка
   jpa:
     hibernate:
       ddl-auto: none
@@ -33,16 +23,19 @@ spring:
     resources:
       add-mapping: true # Локальная разработка фронтенда без nignx apache
 
+
 logging:
   level:
     root: INFO
   file:
     name: logs/logs.log
     path: /
+server:
+  port: 8989
   flyway:
     validate-on-migrate: true  # Проверка целостности миграций
     clean-disabled: true       # Запрет случайного удаления БД
     locations: classpath:db/migration
     baseline-on-migrate: true
-    baseline-version: 2
+    baseline-version: 1
     enabled: true

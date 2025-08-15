@@ -1,4 +1,4 @@
-package ru.Team24;
+package ru.team24;
 
 
 import org.springframework.boot.SpringApplication;
