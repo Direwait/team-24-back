@@ -9,8 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.AuthController;
-import ru.team24.service.impl.AuthService;
+import ru.team24.service.interfaces.AuthService;
 import ru.team24.service.payload.request.LogoutRequest;
+import ru.team24.service.payload.request.RefreshRequest;
 import ru.team24.service.payload.request.SignInRequest;
 
 @RequestMapping("/api/v1/auth")
@@ -30,8 +31,8 @@ public class AuthControllerImpl implements AuthController {
         authService.logout(logoutRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    public ResponseEntity<?> refresh() {
-        return null;
+    @PutMapping()
+    public ResponseEntity<?> refresh(@RequestBody RefreshRequest refreshRequest) {
+        return new ResponseEntity<>(authService.refresh(refreshRequest), HttpStatus.OK);
     }
 }
