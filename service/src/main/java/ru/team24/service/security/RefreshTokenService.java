@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team24.database.entities.RefreshToken;
 import ru.team24.database.entities.User;
 import ru.team24.database.repositories.RefreshTokenRepository;
@@ -49,5 +50,12 @@ public class RefreshTokenService {
             throw new RuntimeException("Refresh token has expired");
         }
         return refreshToken;
+    }
+
+    @Transactional
+    public void deleteRefreshToken(String refreshToken) {
+        if(refreshTokenRepository.existsByRefreshToken(refreshToken)){
+            refreshTokenRepository.deleteByRefreshToken(refreshToken);
+        }
     }
 }

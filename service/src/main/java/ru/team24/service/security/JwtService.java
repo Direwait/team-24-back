@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team24.database.entities.WhiteListedToken;
 import ru.team24.database.repositories.WhiteListedTokenRepository;
 
@@ -54,5 +55,12 @@ public class JwtService {
                 .getPayload()
                 .getSubject();
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jws).getPayload().getSubject();
+    }
+
+    @Transactional
+    public void deleteToken(String token) {
+        if(whiteListedTokenRepository.existsByToken(token)){
+            whiteListedTokenRepository.deleteByToken(token);
+        }
     }
 }

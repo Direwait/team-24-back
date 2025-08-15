@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.team24.database.repositories.RefreshTokenRepository;
 import ru.team24.database.repositories.UserRepository;
+import ru.team24.service.payload.request.LogoutRequest;
 import ru.team24.service.payload.request.SignInRequest;
 import ru.team24.service.payload.response.SignInResponse;
 import ru.team24.service.security.JwtService;
@@ -47,5 +48,10 @@ public class AuthService {
         response.setAccessToken(jwt);
         response.setRefreshToken(refreshToken.getRefreshToken());
         return response;
+    }
+
+    public void logout(LogoutRequest logoutRequest) {
+        jwtService.deleteToken(logoutRequest.getAccessToken());
+        refreshTokenService.deleteRefreshToken(logoutRequest.getRefreshToken());
     }
 }

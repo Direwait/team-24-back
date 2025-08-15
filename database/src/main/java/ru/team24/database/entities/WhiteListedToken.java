@@ -15,5 +15,6 @@ public class WhiteListedToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "token_id")
     private Long tokenId;
+    @Column(name = "token")
     private String token;
 }
