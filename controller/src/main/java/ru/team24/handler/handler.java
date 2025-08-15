@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.team24.handler.error.ResponseApiError;
 
 import java.util.HashMap;
@@ -39,11 +41,19 @@ public class handler {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ResponseApiError> handleDataAccessException(DataAccessException ex,
                                                                       WebRequest request) {
-
         return ResponseApiError.create(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "Database error occurred",
                 request.getDescription(false)
         );
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ResponseApiError> handleNotFound(NoHandlerFoundException ex) {
+       return ResponseApiError.create(
+                HttpStatus.NOT_FOUND,
+                "Endpoint not found",
+                ex.getMessage()
+       );
     }
 }
