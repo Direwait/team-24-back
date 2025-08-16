@@ -1,7 +1,7 @@
 package ru.team24.service.security;
 
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -16,9 +16,11 @@ import java.security.KeyPair;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
-    @Autowired
-    WhiteListedTokenRepository whiteListedTokenRepository;
+
+    private final WhiteListedTokenRepository whiteListedTokenRepository;
+
     @Value("${jwt.configuration.expirationTime}")
     private long expirationTime;
     KeyPair keyPair = Jwts.SIG.RS256.keyPair().build();
