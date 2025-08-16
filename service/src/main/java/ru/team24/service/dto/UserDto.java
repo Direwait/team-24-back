@@ -28,4 +28,6 @@ public class UserDto {
 
     private Date userCreatedAt;
 
+    private boolean userIsActive;
+
 }

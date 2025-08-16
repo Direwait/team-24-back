@@ -1,9 +1,7 @@
 package ru.team24.service.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import ru.team24.service.dto.NotificationDto;
 import ru.team24.database.entities.Notification;
+import ru.team24.service.dto.NotificationDto;
 
 //@Mapper(componentModel = "spring")
 public interface NotificationMapper {

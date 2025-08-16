@@ -30,6 +30,11 @@ public class Request {
     @JoinColumn(name = "template_id", referencedColumnName = "template_id", nullable = false)
     private Template template;
 
+    @OneToOne
+    @JoinColumn(name = "sopd_id", referencedColumnName = "sopd_id", nullable = false)
+    private Sopd sopd;
+
+    @Column(nullable = false, unique = true)
     private String requestToken;
 
     @Enumerated(EnumType.STRING)

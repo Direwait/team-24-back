@@ -2,8 +2,8 @@ package ru.team24.service.mapper;
 
 
 import org.mapstruct.Mapper;
-import ru.team24.service.dto.TemplateDto;
 import ru.team24.database.entities.Template;
+import ru.team24.service.dto.TemplateDto;
 
 @Mapper(componentModel = "spring")
 public interface TemplateMapper {

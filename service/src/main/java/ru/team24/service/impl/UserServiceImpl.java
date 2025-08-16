@@ -3,15 +3,12 @@ package ru.team24.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.team24.service.dto.UserDto;
-import ru.team24.database.entities.Role;
-import ru.team24.database.entities.User;
 import ru.team24.database.repositories.RoleRepository;
 import ru.team24.database.repositories.UserRepository;
 import ru.team24.service.interfaces.UserService;
 import ru.team24.service.mapper.UserMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

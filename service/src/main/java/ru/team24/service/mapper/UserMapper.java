@@ -1,7 +1,7 @@
 package ru.team24.service.mapper;
 
-import ru.team24.service.dto.UserDto;
 import ru.team24.database.entities.User;
+import ru.team24.service.dto.UserDto;
 
 public interface UserMapper {
 

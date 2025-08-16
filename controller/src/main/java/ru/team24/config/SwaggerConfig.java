@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-//для теста нужна настроить ломбок в проекте
 @Configuration
 public class SwaggerConfig {
 

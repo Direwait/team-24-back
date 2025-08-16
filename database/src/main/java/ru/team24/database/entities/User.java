@@ -1,10 +1,7 @@
 package ru.team24.database.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -24,15 +21,24 @@ public class User {
     @JoinColumn(name="role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 
+
+    @Column(name = "user_mail", nullable = false, unique = true)
     private String userMail;
 
+    @Column(name = "user_password", nullable = false)
     private String userPassword;
 
+    @Column(name = "user_first_name", nullable = false)
     private String userFirstName;
 
+    @Column(name = "user_last_name", nullable = false)
     private String userLastName;
 
+    @Column(name = "user_created_at")
     private Date userCreatedAt = new Date();
+
+    @Column(name = "user_is_active")
+    private boolean userIsActive;
 
     public long getRoleId() {
         return role.getRoleId();

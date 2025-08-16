@@ -1,10 +1,10 @@
 package ru.team24.service.interfaces;
 
 import ru.team24.service.dto.RequestDto;
+
 import ru.team24.database.enums.RequestState;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.RequestUpdateRequest;
-
 import java.util.List;
 
 public interface RequestService {
@@ -21,6 +21,5 @@ public interface RequestService {
     boolean isRequestPending(RequestStatusRequest statusRequest);
 
     void updateRequest(RequestUpdateRequest updateRequest);
-
 
 }
