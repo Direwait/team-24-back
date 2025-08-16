@@ -3,7 +3,7 @@ package ru.team24.service.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.team24.database.entities.User;
+import ru.team24.database.domain.general.entity.User;
 
 import java.util.Collection;
 import java.util.stream.Stream;

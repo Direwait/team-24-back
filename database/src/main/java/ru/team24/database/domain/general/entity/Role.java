@@ -1,0 +1,24 @@
+package ru.team24.database.domain.general.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "roles")
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
+    private Long roleId;
+
+    private String roleName;
+
+    private boolean viewingMyRequests = false;
+    private boolean viewingAllRequests = false;
+    private boolean creatingRequests = false;
+    private boolean creatingAdmins = false;
+}

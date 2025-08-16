@@ -3,10 +3,14 @@ package ru.team24.controller.future.Impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.future.GeneratorLinkController;
-import ru.team24.database.entities.Candidate;
-import ru.team24.service.linkInvite.LinkGeneratorService;
+import ru.team24.service.domain.manager.RequestService;
+import ru.team24.service.dto.CandidateDto;
+import ru.team24.service.domain.manager.tokenLinkManager.tokenManager;
+import ru.team24.service.domain.manager.CandidateService;
+import ru.team24.service.security.UserDetailsImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,37 +20,52 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GeneratorLinkControllerImpl implements GeneratorLinkController {
 
-    private final LinkGeneratorService linkGeneratorService;
+    private final tokenManager linkGen;
+    private final CandidateService candidateService;
+    private final RequestService requestService;
 
+    // todo
+    // requestWithID
+    // long candidateId
+    // long templateId = default recent
+    // long sopdId = default recent
+
+    //вынести в request controller
     @PostMapping("/generate")
     @Override
     public ResponseEntity<Map<String, String>> generateLink(
-            @RequestParam Long candidateId,
-            @RequestParam Long templateId,
-            @RequestParam Long userId) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam long candidateId,
+            @RequestParam long templateId,
+            @RequestParam long sopdId)
+    {
+        String token = linkGen.generateAccessToken();
 
-        String token = linkGeneratorService.createRequest(candidateId, templateId, userId);
-        String link = "http://localhost:8989/api/v1/link/update-form?token=" + token;
+        requestService.createRequestWithToken(candidateId, templateId, userDetails.getId(), sopdId, token);
+
+        String link = "http://localhost:5173/api/v1/link/update-form?token=" + token;
 
         Map<String, String> response = new HashMap<>();
         response.put("link", link);
         response.put("token", token);
-
         return ResponseEntity.ok(response);
     }
 
+    //вынести в candidate controller
+    //без id
     @PostMapping("/update-form")
     @Override
     public ResponseEntity<String> updateCandidate(
             @RequestParam String token,
-            @RequestBody Candidate candidateData) {
+            @RequestBody CandidateDto candidateData) {
 
-        if (!linkGeneratorService.isTokenValid(token)) {
+        if (!linkGen.isTokenValid(token)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("Неверный или просроченный токен");
         }
 
-        linkGeneratorService.updateCandidateData(token, candidateData);
+        //обновить кандидата с данными по токену (ключу)
+        candidateService.updateCandidateData(token, candidateData);
         return ResponseEntity.ok("Данные кандидата обновлены");
     }
 

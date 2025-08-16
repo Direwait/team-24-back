@@ -9,10 +9,10 @@ VALUES
     ('Рекрутер', TRUE, FALSE, TRUE, FALSE);
 
 -- 2. Затем пользователей (зависит от roles)
-INSERT INTO users (role_id, user_mail, user_password, user_first_name, user_last_name)
+INSERT INTO users (role_id, user_mail, user_password, user_first_name, user_last_name, user_is_active)
 VALUES
-    (1, 'admin@example.com', '{noop}12345', 'Иван', 'Петров'),
-    (2, 'manager@example.com', '$2a$10$qCQY8X3t6SYsMlz5vJ4NUe8YgZRb0N5DdQ2XUzYJg7cV1hQ9LbK0O', 'Анна', 'Сидорова');
+    (1, 'admin@example.com', '$2a$04$gDtS8LWULFmjx5L5Grcjn./ysrrZSLNqqmOiHe9EsYUZtsIJm0aXm', 'Иван', 'Петров', true),
+    (2, 'manager@example.com', '$2a$10$qCQY8X3t6SYsMlz5vJ4NUe8YgZRb0N5DdQ2XUzYJg7cV1hQ9LbK0O', 'Анна', 'Сидорова', true);
 
 -- 3. Затем кандидатов (нет зависимостей)
 INSERT INTO candidate (candidate_first_name, candidate_last_name, candidate_father_name, candidate_mail, candidate_birth_date, candidate_phone)

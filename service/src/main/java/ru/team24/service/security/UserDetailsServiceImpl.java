@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.team24.database.entities.User;
-import ru.team24.database.repositories.UserRepository;
+import ru.team24.database.domain.general.entity.User;
+import ru.team24.database.domain.general.repository.UserRepository;
 
 import java.util.Optional;
 

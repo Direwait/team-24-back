@@ -1,16 +1,14 @@
 package ru.team24.service.security;
 
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team24.database.entities.RefreshToken;
-import ru.team24.database.entities.User;
-import ru.team24.database.repositories.RefreshTokenRepository;
-import ru.team24.database.repositories.UserRepository;
+import ru.team24.database.domain.general.entity.RefreshToken;
+import ru.team24.database.domain.general.entity.User;
+import ru.team24.database.domain.general.repository.RefreshTokenRepository;
+import ru.team24.database.domain.general.repository.UserRepository;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -21,10 +19,10 @@ import java.util.UUID;
 public class RefreshTokenService {
     @Value("${jwt.configuration.refreshExpirationTime}")
     private Long refreshTokenExpirationTime;
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-    @Autowired
-    private UserRepository userRepository;
+
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final UserRepository userRepository;
 
 
     public Optional<RefreshToken> findByRefreshToken(String refreshToken) {

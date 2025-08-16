@@ -3,7 +3,7 @@ package ru.team24.service.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import ru.team24.database.entities.Sopd;
+import ru.team24.database.domain.admin.entity.Sopd;
 import ru.team24.service.dto.SopdDto;
 
 @Mapper(componentModel = "spring")
