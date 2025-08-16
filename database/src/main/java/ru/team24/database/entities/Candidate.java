@@ -16,24 +16,19 @@ import java.util.Date;
 public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="candidate_id")
+    @Column(name = "candidate_id")
     private Long candidateId;
 
-    @Column(nullable = false)
     private String candidateFirstName;
 
-    @Column(nullable = false)
     private String candidateLastName;
 
     private String candidateFatherName;
 
-    @Column(nullable = false, unique = true)
     private String candidateMail;
 
-    @Column(nullable = false)
     private Date candidateBirthDate;
 
-    @Column(nullable = false)
     private String candidatePhone;
 
     private Date candidateCreatedAt = new Date();

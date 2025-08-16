@@ -23,14 +23,11 @@ public class Notification {
     @JoinColumn(name = "request_id", referencedColumnName = "request_id")
     private Request request;
 
-    @Column(nullable = false)
     private String notificationText;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private NotificationState notificationState;
 
-    @Column(nullable = false)
     private Date notificationCreatedAt = new Date();
 
     private Date notificationReadAt;

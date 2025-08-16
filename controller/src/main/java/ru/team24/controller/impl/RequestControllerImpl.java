@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.RequestController;
 import ru.team24.service.dto.RequestDto;
 import ru.team24.service.interfaces.RequestService;
+import ru.team24.service.payload.request.RequestStatusRequest;
+import ru.team24.service.payload.request.RequestUpdateRequest;
 
 import java.util.List;
 
@@ -34,15 +36,26 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(requestService.getByRequestState(requestState), HttpStatus.OK);
     }
 
-    @PatchMapping("/update/{requestId}")
-    public ResponseEntity<?> updateRequestByRequestId(@PathVariable long requestId, @RequestBody RequestDto requestDto) {
-        requestService.updateRequestByRequestId(requestId, requestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<?> updateRequestByRequestId(long requestId, RequestDto requestDto) {
+        return null;
+    }
+
+    @PatchMapping()
+    public ResponseEntity<?> updateRequest(@RequestBody RequestUpdateRequest requestUpdate) {
+        requestService.updateRequest(requestUpdate);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping()
     public ResponseEntity<?> createRequest(@RequestBody RequestDto requestDto) {
         requestService.createRequest(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @GetMapping("/status")
+    public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {
+        if (requestService.isRequestPending(statusRequest)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
