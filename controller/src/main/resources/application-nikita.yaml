@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: team24
@@ -23,6 +26,15 @@ spring:
     resources:
       add-mapping: true # Локальная разработка фронтенда без nignx apache
 
+#облако
+  config:
+    import: "optional:configserver:http://localhost:8888"  # URL Config Server
+  cloud:
+    config:
+      uri: http://localhost:8888
+      profile: nikita      # Используемый профиль
+    enabled: true
+
 
 logging:
   level:
@@ -30,8 +42,6 @@ logging:
   file:
     name: logs/logs.log
     path: /
-server:
-  port: 8989
   flyway:
     validate-on-migrate: true  # Проверка целостности миграций
     clean-disabled: true       # Запрет случайного удаления БД
