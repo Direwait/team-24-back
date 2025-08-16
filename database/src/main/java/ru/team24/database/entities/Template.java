@@ -37,5 +37,4 @@ public class Template {
 
     @Column(name = "template_is_active")
     private boolean templateIsActive = true;
-
 }

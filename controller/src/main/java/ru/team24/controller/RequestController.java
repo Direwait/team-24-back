@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.team24.service.dto.RequestDto;
+import ru.team24.service.payload.request.RequestUpdateRequest;
 
 import java.util.List;
 
@@ -35,4 +36,7 @@ public interface RequestController {
             summary = "Добавление нового кандидата"
     )
     ResponseEntity<?> createRequest(@RequestBody RequestDto requestDto);
+
+    ResponseEntity<?> updateRequest(@RequestBody RequestUpdateRequest requestUpdateRequest);
+
 }

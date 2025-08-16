@@ -1,5 +1,6 @@
 package ru.team24.service.impl;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.team24.database.repositories.CandidateRepository;
@@ -11,6 +12,8 @@ import ru.team24.database.repositories.UserRepository;
 import ru.team24.service.interfaces.EmailService;
 import ru.team24.service.interfaces.RequestService;
 import ru.team24.service.mapper.RequestMapper;
+import ru.team24.service.payload.request.RequestStatusRequest;
+import ru.team24.service.payload.request.RequestUpdateRequest;
 
 import java.util.List;
 
@@ -55,5 +58,30 @@ public class RequestServiceImpl implements RequestService {
         var request = requestMapper.dtoToEntity(requestDto);
         request.setRequestId(null); // для авто-генерации ID
         requestRepository.save(request);
+    }
+
+    public boolean isRequestPending(RequestStatusRequest statusRequest) {
+        var request = requestRepository.findByRequestToken(statusRequest.getToken()).orElseThrow();
+        return request.getRequestState() == RequestState.PENDING;
+    }
+
+    public void updateRequest(RequestUpdateRequest updateRequest) {
+        var candidate = candidateRepository.findByCandidateMail(updateRequest.getCandidateMail()).orElseThrow();
+        candidate.setCandidatePhone(updateRequest.getCandidatePhone());
+        candidate.setCandidateBirthDate(updateRequest.getCandidateBirthDate());
+        candidate.setCandidateFirstName(updateRequest.getCandidateFirstName());
+        candidate.setCandidateLastName(updateRequest.getCandidateLastName());
+        candidate.setCandidateFatherName(updateRequest.getCandidateFatherName());
+        candidateRepository.save(candidate);
+        var request = requestRepository.findByCandidate(candidate).orElseThrow();
+        request.setRequestState(updateRequest.getRequestState());
+        requestRepository.save(request);
+        var user = userRepository.findByUserId(request.getUserId()).orElseThrow();
+        var template = templateRepository.findByTemplateId(request.getTemplateId()).orElseThrow();
+        try {
+            emailService.sendEmail(template.getTemplateSubject(), template.getTemplateBody(), user.getUserMail());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

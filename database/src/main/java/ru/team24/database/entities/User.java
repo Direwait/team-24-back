@@ -14,14 +14,15 @@ import java.util.Date;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private Long userId;
 
     @OneToOne
     @JoinColumn(name="role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 
-    @Column(name= "user_mail", nullable = false, unique = true)
+
+    @Column(name = "user_mail", nullable = false, unique = true)
     private String userMail;
 
     @Column(name = "user_password", nullable = false)

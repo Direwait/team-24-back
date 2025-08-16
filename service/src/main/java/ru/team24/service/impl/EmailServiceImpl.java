@@ -25,7 +25,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setTo(emailTo);
         helper.setSubject(subject);
         helper.setText(body, true);
-        mailSender.send(message);
+        mailSender.send(message); //раскомментить по нужде
 
     }
 }

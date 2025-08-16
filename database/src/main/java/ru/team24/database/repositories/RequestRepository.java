@@ -2,6 +2,7 @@ package ru.team24.database.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import ru.team24.database.entities.Candidate;
 import ru.team24.database.entities.Request;
 import ru.team24.database.entities.User;
 import ru.team24.database.enums.RequestState;
@@ -15,4 +16,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> getByUser(User userId);
     List<Request> getByRequestState(RequestState requestState);
     Optional<Request> findByRequestToken(String requestToken);
+
+    Optional<Request> findByCandidate(Candidate candidate);
 }

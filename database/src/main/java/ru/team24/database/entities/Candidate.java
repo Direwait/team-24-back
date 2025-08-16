@@ -16,9 +16,9 @@ import java.util.Date;
 public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="candidate_id")
+    @Column(name = "candidate_id")
     private Long candidateId;
-
+  
     @Column(name = "candidate_first_name", nullable = false)
     private String candidateFirstName;
 
@@ -27,7 +27,7 @@ public class Candidate {
 
     @Column(name = "candidate_father_name")
     private String candidateFatherName;
-
+  
     @Column(name = "candidate_mail", nullable = false, unique = true)
     private String candidateMail;
 

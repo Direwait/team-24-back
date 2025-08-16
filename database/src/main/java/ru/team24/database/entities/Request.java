@@ -37,7 +37,6 @@ public class Request {
     @Column(nullable = false, unique = true)
     private String requestToken;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RequestState requestState;
 
