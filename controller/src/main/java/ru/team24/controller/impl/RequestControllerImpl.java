@@ -49,7 +49,7 @@ public class RequestControllerImpl implements RequestController {
         requestService.createRequest(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    @GetMapping("/status")
+    @PostMapping("/status")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {
         if (requestService.isRequestPending(statusRequest)) {
             return new ResponseEntity<>(HttpStatus.OK);
