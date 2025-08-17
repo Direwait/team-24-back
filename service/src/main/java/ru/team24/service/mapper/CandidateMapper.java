@@ -24,5 +24,7 @@ public interface CandidateMapper {
     @Mapping(target = "candidateFatherName", ignore = true)
     @Mapping(target = "candidateBirthDate", ignore = true)
     @Mapping(target = "candidatePhone", ignore = true)
+    @Mapping(target = "candidateCreatedAt", ignore = true)
+    @Mapping(target = "candidateIsActive", ignore = true)
     Candidate mailToEntity(String candidateMail, @MappingTarget Candidate candidate);
 }

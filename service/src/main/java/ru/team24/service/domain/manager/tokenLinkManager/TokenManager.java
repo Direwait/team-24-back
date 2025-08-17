@@ -1,6 +1,6 @@
 package ru.team24.service.domain.manager.tokenLinkManager;
 
-public interface tokenManager {
+public interface TokenManager {
     String generateAccessToken();
 
     boolean isTokenValid (String token);

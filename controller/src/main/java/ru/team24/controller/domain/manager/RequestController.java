@@ -34,11 +34,6 @@ public interface RequestController {
     )
     ResponseEntity<?> updateRequestByRequestId(long requestId, RequestDto requestDto);
 
-    @Operation(
-            summary = "Добавление нового кандидата"
-    )
-    ResponseEntity<?> createRequest(@RequestBody RequestDto requestDto);
-
     ResponseEntity<?> updateRequest(@RequestBody RequestUpdateRequest requestUpdateRequest);
 
     @Operation(

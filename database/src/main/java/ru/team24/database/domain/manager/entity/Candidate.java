@@ -3,6 +3,7 @@ package ru.team24.database.domain.manager.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -11,7 +12,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Candidate {
+public class Candidate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "candidate_id")
@@ -35,9 +36,11 @@ public class Candidate {
     @Column(name = "candidate_phone", nullable = false)
     private String candidatePhone;
 
+    @Builder.Default
     @Column(name = "candidate_created_at")
     private Date candidateCreatedAt = new Date();
 
+    @Builder.Default
     @Column(name = "candidate_is_active")
     private boolean candidateIsActive = true;
 }

@@ -10,6 +10,8 @@ public interface CandidateService {
 
     void addCandidateByMail(List<String> mails);
 
+    void addCandidateByMail(List<String> mails, long managerId);
+
     //обновить кандидата по токену из реквестов
     void updateCandidateData(String token, CandidateDto updatedCandidateDto);
 }

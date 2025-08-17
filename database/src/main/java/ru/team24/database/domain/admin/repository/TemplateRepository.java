@@ -13,5 +13,5 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
     Optional<Template> findTopByOrderByTemplateIdDesc();
 
     @Query("SELECT MAX(t.templateId) FROM Template t")
-    long getLatestTemplateId();
+    long getRecentTemplateId();
 }

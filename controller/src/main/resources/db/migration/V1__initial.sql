@@ -65,7 +65,8 @@ CREATE TABLE if not exists request (
     request_token VARCHAR(100) NOT NULL UNIQUE,
     request_state VARCHAR(20), --CHECK (request_state IN ('PENDING', 'APPROVED', 'REJECTED', 'EXPIRED')) DEFAULT 'PENDING',
     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    request_is_active BOOLEAN DEFAULT TRUE
+    request_is_active BOOLEAN DEFAULT TRUE,
+    request_version BIGINT
 );
 
 -- Создание таблицы Notification (уведомления)

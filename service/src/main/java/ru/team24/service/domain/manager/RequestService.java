@@ -2,6 +2,7 @@ package ru.team24.service.domain.manager;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.team24.service.domain.manager.observ.action.ActionRegisterNewCandidate;
 import ru.team24.service.dto.RequestDto;
 
 import ru.team24.service.payload.request.RequestStatusRequest;
@@ -17,11 +18,6 @@ public interface RequestService {
 
     void updateRequestByRequestId(long requestId, RequestDto request);
 
-
-    //todo должен возвращать dto, в текущей реализации я не трогал
-    @Deprecated
-    void createRequest(RequestDto requestDto);
-
     boolean isRequestPending(RequestStatusRequest statusRequest);
 
     void updateRequest(RequestUpdateRequest updateRequest);
@@ -29,6 +25,6 @@ public interface RequestService {
     //палидация запросов
     Page<RequestDto> getRequestsPage(Pageable pageable);
 
-    //создание полного запроса со ссылкой ++
-    RequestDto createRequestWithToken(long candidateId, long templateId, long managerId, long sopdId, String token);
+    void createRequestWithTokenByClint(ActionRegisterNewCandidate action);
+
 }

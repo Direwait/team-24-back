@@ -7,6 +7,7 @@ import ru.team24.database.domain.admin.entity.Template;
 import ru.team24.database.domain.general.entity.User;
 import ru.team24.database.enums.RequestState;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Request {
+public class Request implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
@@ -43,7 +44,11 @@ public class Request {
     @Enumerated(EnumType.STRING)
     private RequestState requestState;
 
+    @Builder.Default
     private Date requestDate = new Date();
+
+    @Version
+    private long requestVersion;
 
     public long getUserId(){
         return user.getUserId();

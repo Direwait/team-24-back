@@ -1,54 +1,45 @@
 package ru.team24.controller.future.Impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.future.GeneratorLinkController;
-import ru.team24.service.domain.manager.RequestService;
+import ru.team24.controller.future.dto.EmailsDto;
+import ru.team24.service.domain.admin.SopdService;
+import ru.team24.service.domain.admin.TemplateService;
 import ru.team24.service.dto.CandidateDto;
-import ru.team24.service.domain.manager.tokenLinkManager.tokenManager;
+import ru.team24.service.domain.manager.tokenLinkManager.TokenManager;
 import ru.team24.service.domain.manager.CandidateService;
 import ru.team24.service.security.UserDetailsImpl;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
+@Slf4j
 @RequestMapping("/api/v1/link")
 @RestController
 @RequiredArgsConstructor
 public class GeneratorLinkControllerImpl implements GeneratorLinkController {
 
-    private final tokenManager linkGen;
+    private final TokenManager linkGen;
     private final CandidateService candidateService;
-    private final RequestService requestService;
 
-    // todo
-    // requestWithID
-    // long candidateId
-    // long templateId = default recent
-    // long sopdId = default recent
 
-    //вынести в request controller
-    @PostMapping("/generate")
-    @Override
-    public ResponseEntity<Map<String, String>> generateLink(
+
+    @PostMapping("/gene")
+    public ResponseEntity<Map<String, String>> link(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam long candidateId,
-            @RequestParam long templateId,
-            @RequestParam long sopdId)
+            @RequestBody EmailsDto emails
+    )
     {
-        String token = linkGen.generateAccessToken();
+        var managerId = userDetails.getId();
 
-        requestService.createRequestWithToken(candidateId, templateId, userDetails.getId(), sopdId, token);
+        log.info("заходим на почты {}",emails.getEmails().get(0));
+        candidateService.addCandidateByMail(emails.getEmails(), managerId);
 
-        String link = "http://localhost:5173/api/v1/link/update-form?token=" + token;
-
-        Map<String, String> response = new HashMap<>();
-        response.put("link", link);
-        response.put("token", token);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().build();
     }
 
     //вынести в candidate controller
@@ -68,5 +59,4 @@ public class GeneratorLinkControllerImpl implements GeneratorLinkController {
         candidateService.updateCandidateData(token, candidateData);
         return ResponseEntity.ok("Данные кандидата обновлены");
     }
-
 }

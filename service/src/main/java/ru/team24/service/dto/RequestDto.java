@@ -17,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class RequestDto {
 
-    private long requestId;
+    private Long requestId;
 
     @NotNull(message = "User information is required")
     private long userId;

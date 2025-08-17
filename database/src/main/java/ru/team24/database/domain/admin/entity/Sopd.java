@@ -25,6 +25,7 @@ public class Sopd {
     @Column(name= "sopd_text", nullable = false)
     private String sopdText;
 
+    @Builder.Default
     @Column(name = "sopd_created_at")
     private Date sopdCreatedAt = new Date();
 
@@ -34,6 +35,7 @@ public class Sopd {
     @Column(name = "sopd_last_review")
     private Date sopdLastReview;
 
+    @Builder.Default
     @Column(name = "sopd_is_active")
     private boolean sopdIsActive = true;
 }

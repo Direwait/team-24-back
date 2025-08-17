@@ -12,5 +12,5 @@ public interface SopdRepository extends JpaRepository<Sopd, Long> {
     Optional<Sopd> findTopByOrderBySopdIdDesc();
 
     @Query("SELECT MAX(s.sopdId) FROM Sopd s")
-    long getLatestSopdId();
+    long getRecentSopdId();
 }

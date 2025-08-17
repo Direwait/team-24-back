@@ -4,17 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.team24.database.domain.manager.repository.RequestRepository;
-import ru.team24.service.domain.manager.tokenLinkManager.tokenManager;
+import ru.team24.service.domain.manager.tokenLinkManager.TokenManager;
 
 import java.util.UUID;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class tokenManagerImpl implements tokenManager {
+public class TokenManagerImpl implements TokenManager {
     private final RequestRepository requestRepository;
 
     public String generateAccessToken() {
+        log.info("уникальная ссылка");
         return UUID.randomUUID().toString();
     }
 
