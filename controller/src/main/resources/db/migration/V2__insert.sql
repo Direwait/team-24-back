@@ -14,7 +14,10 @@ VALUES
     (1, 'admin@example.com', '$2a$04$gDtS8LWULFmjx5L5Grcjn./ysrrZSLNqqmOiHe9EsYUZtsIJm0aXm', 'Иван', 'Петров', true),
     (2, 'manager@example.com', '$2a$10$qCQY8X3t6SYsMlz5vJ4NUe8YgZRb0N5DdQ2XUzYJg7cV1hQ9LbK0O', 'Анна', 'Сидорова', true),
     (1, 'admin@mail.ru','$2a$10$Yay7Hy2bSG2wk0h.52shielt.fYS0lXP9CnMwXnIgTJcXu3pnzs4y', 'admin_first_name','admin_last_name', true),
-    (2, 'manager@mail.ru','$2a$10$jbO7qo9pRXkRapl6YVkO7.WHOnT9DxR/tbIrzb6M5.3l807Ln1TZ.', 'manager_first_name','manager_last_name', true);
+    (2, 'manager@mail.ru','$2a$10$jbO7qo9pRXkRapl6YVkO7.WHOnT9DxR/tbIrzb6M5.3l807Ln1TZ.', 'manager_first_name','manager_last_name', true),
+    (1, 'admin2@mail.ru','$2a$10$Yay7Hy2bSG2wk0h.52shielt.fYS0lXP9CnMwXnIgTJcXu3pnzs4y', 'admin_first_name','admin_last_name', true),
+    (2, 'manager2@mail.ru','$2a$10$jbO7qo9pRXkRapl6YVkO7.WHOnT9DxR/tbIrzb6M5.3l807Ln1TZ.', 'manager_first_name','manager_last_name', true);
+
 
 
 -- 3. Затем кандидатов (нет зависимостей)
