@@ -2,7 +2,8 @@ package ru.team24.service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.team24.database.entities.Candidate;
+import org.mapstruct.MappingTarget;
+import ru.team24.database.domain.manager.entity.Candidate;
 import ru.team24.service.dto.CandidateDto;
 
 @Mapper(componentModel = "spring")
@@ -13,4 +14,17 @@ public interface CandidateMapper {
 
     @Mapping(source = "candidateCreatedAt", target = "candidateCreatedAt")
     CandidateDto entityToDto(Candidate entity);
+
+    @Mapping(target = "candidateId", ignore = true)
+    void updateFromDto(CandidateDto candidateDto, @MappingTarget Candidate candidate);
+
+    @Mapping(target = "candidateId", ignore = true)
+    @Mapping(target = "candidateFirstName", ignore = true)
+    @Mapping(target = "candidateLastName", ignore = true)
+    @Mapping(target = "candidateFatherName", ignore = true)
+    @Mapping(target = "candidateBirthDate", ignore = true)
+    @Mapping(target = "candidatePhone", ignore = true)
+    @Mapping(target = "candidateCreatedAt", ignore = true)
+    @Mapping(target = "candidateIsActive", ignore = true)
+    Candidate mailToEntity(String candidateMail, @MappingTarget Candidate candidate);
 }

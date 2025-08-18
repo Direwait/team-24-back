@@ -1,29 +1,31 @@
 package ru.team24.service.security;
 
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team24.database.entities.WhiteListedToken;
-import ru.team24.database.repositories.WhiteListedTokenRepository;
+import ru.team24.database.domain.general.entity.WhiteListedToken;
+import ru.team24.database.domain.general.repository.WhiteListedTokenRepository;
 
 import javax.crypto.SecretKey;
 import java.security.KeyPair;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
-    @Autowired
-    WhiteListedTokenRepository whiteListedTokenRepository;
+
+    private final WhiteListedTokenRepository whiteListedTokenRepository;
+
     @Value("${jwt.configuration.expirationTime}")
     private long expirationTime;
-    KeyPair keyPair = Jwts.SIG.RS256.keyPair().build();
 
-    SecretKey secretKey = Jwts.SIG.HS256.key().build();
+   private final KeyPair keyPair = Jwts.SIG.RS256.keyPair().build();
+
+   private final SecretKey secretKey = Jwts.SIG.HS256.key().build();
 
     public String generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();

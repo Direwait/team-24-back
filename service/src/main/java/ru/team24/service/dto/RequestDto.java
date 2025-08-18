@@ -4,10 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.team24.database.enums.RequestState;
 
 import java.util.Date;
@@ -15,11 +12,12 @@ import java.util.Date;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDto {
 
-    private long requestId;
+    private Long requestId;
 
     @NotNull(message = "User information is required")
     private long userId;

@@ -5,9 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.team24.database.entities.Template;
-import ru.team24.database.repositories.TemplateRepository;
+import ru.team24.database.domain.admin.entity.Template;
+import ru.team24.database.domain.admin.repository.TemplateRepository;
 import ru.team24.service.dto.TemplateDto;
+import ru.team24.service.domain.admin.impl.TemplateServiceImpl;
 import ru.team24.service.mapper.TemplateMapper;
 
 import jakarta.persistence.EntityNotFoundException;

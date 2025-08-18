@@ -1,0 +1,46 @@
+package ru.team24.controller.domain.general.impl;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+import ru.team24.controller.domain.general.UserController;
+import ru.team24.service.dto.UserDto;
+import ru.team24.service.domain.general.UserService;
+
+import java.util.List;
+
+@RequestMapping("/api/v1/users")
+@RestController
+@RequiredArgsConstructor
+public class UserControllerImpl implements UserController {
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> findByUserId(@PathVariable long userId) {
+        return new ResponseEntity<>(userService.findByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/exists/{mail}")
+    public ResponseEntity<?> existsByEmail(@PathVariable String mail) {
+        if(userService.existsByUserMail(mail)){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<?>> findAllUsers() {
+        return new ResponseEntity<>(userService.findAllUsers(), HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> addUser(@RequestBody UserDto userDto) {
+        userDto.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
+        userService.addUser(userDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+}

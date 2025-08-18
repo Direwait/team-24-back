@@ -1,18 +1,23 @@
 package ru.team24.service.mapper;
 
-import ru.team24.database.entities.Request;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import ru.team24.database.domain.manager.entity.Request;
 import ru.team24.service.dto.RequestDto;
 
-//@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring")
 public interface RequestMapper {
 
-   // @Mapping(target = "user.userId", source = "user.userId") // Игнорируем автоматический маппинг
-   // @Mapping(target = "candidate.candidateId", source = "user.userId")
-   // @Mapping(target = "template", ignore = true)
-    Request dtoToEntity(RequestDto requestDto);
+   @Mapping(source = "userId", target = "user.userId") // Игнорируем автоматический маппинг
+   @Mapping(source = "candidateId", target = "candidate.candidateId")
+   @Mapping(source = "templateId", target = "template.templateId")
+   @Mapping(source = "sopdId", target = "sopd.sopdId")
+   Request dtoToEntity(RequestDto requestDto);
 
-   // @Mapping(target = "user.userId", source = "user.userId") // Игнорируем автоматический маппинг
-   // @Mapping(target = "candidate", ignore = true)
-   // @Mapping(target = "template", ignore = true)
-    RequestDto entityToDto(Request request);
+
+   @Mapping(source = "user.userId", target = "userId") // Игнорируем автоматический маппинг
+   @Mapping(source = "candidate.candidateId", target = "candidateId")
+   @Mapping(source = "template.templateId", target = "templateId")
+   @Mapping(source = "sopd.sopdId", target = "sopdId")
+   RequestDto entityToDto(Request request);
 }
