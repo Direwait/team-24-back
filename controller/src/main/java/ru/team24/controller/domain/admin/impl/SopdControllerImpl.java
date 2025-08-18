@@ -10,7 +10,7 @@ import ru.team24.service.domain.admin.SopdService;
 import ru.team24.service.payload.request.SopdUpdateRequest;
 import ru.team24.service.security.UserDetailsImpl;
 
-@RequestMapping("/api/v1/sopd")
+@RequestMapping("/api/v1/sopds")
 @RestController
 @RequiredArgsConstructor
 public class SopdControllerImpl implements SopdController {
