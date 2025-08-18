@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.domain.admin.SopdController;
 import ru.team24.service.dto.SopdDto;
 import ru.team24.service.domain.admin.SopdService;
+import ru.team24.service.payload.request.SopdUpdateRequest;
 import ru.team24.service.security.UserDetailsImpl;
 
-@RequestMapping("/api/v1/sopds")
+@RequestMapping("/api/v1/sopd")
 @RestController
 @RequiredArgsConstructor
 public class SopdControllerImpl implements SopdController {
@@ -24,19 +25,17 @@ public class SopdControllerImpl implements SopdController {
     }
 
     @PostMapping()
-    @Override
     public ResponseEntity<SopdDto> updateSopds(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody String sopdText
+            @RequestBody SopdUpdateRequest sopdUpdateRequest
     ) {
         long sopdId = sopdService.findRecentSopd().getSopdId();
-        var sopdDto = SopdDto.builder().sopdText(sopdText).build();
+        var sopdDto = SopdDto.builder().sopdText(sopdUpdateRequest.getSopdText()).build();
         var sopdUpdated = sopdService.updateSopd(sopdId, sopdDto);
         return ResponseEntity.ok(sopdUpdated);
     }
 
     @PatchMapping("/{id}")
-    @Override
     public ResponseEntity<Void> deleteSopds(@PathVariable long id) {
         sopdService.deleteSopd(id);
         return ResponseEntity.ok().build();

@@ -47,9 +47,6 @@ public class Request implements Serializable {
     @Builder.Default
     private Date requestDate = new Date();
 
-    @Version
-    private long requestVersion;
-
     public long getUserId(){
         return user.getUserId();
     }

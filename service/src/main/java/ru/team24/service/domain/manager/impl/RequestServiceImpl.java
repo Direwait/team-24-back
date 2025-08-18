@@ -111,7 +111,16 @@ public class RequestServiceImpl implements RequestService {
         var user = userRepository.findByUserId(request.getUserId()).orElseThrow();
         var template = templateRepository.findByTemplateId(request.getTemplateId()).orElseThrow();
         try {
-            emailService.sendEmail(template.getTemplateSubject(), template.getTemplateBody(), user.getUserMail());
+            emailService.sendEmail("Статус заявки изменён", """
+                                <html>
+                                    <body>
+                                    <p>Статус заявки кандидата %s %s %s изменен на %s</p>
+                                    </body>
+                                </html>
+                    """.formatted(candidate.getCandidateFirstName(),
+                    candidate.getCandidateLastName(),
+                    candidate.getCandidateFatherName(),
+                    updateRequest.getRequestState()), user.getUserMail());
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
