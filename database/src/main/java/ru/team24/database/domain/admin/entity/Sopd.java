@@ -1,5 +1,6 @@
 package ru.team24.database.domain.admin.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.team24.database.domain.general.entity.User;
@@ -27,12 +28,15 @@ public class Sopd {
 
     @Builder.Default
     @Column(name = "sopd_created_at")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date sopdCreatedAt = new Date();
 
     @Column(name = "sopd_updated_at")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date sopdUpdatedAt;
 
     @Column(name = "sopd_last_review")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date sopdLastReview;
 
     @Builder.Default

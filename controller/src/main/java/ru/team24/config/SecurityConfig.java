@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.team24.database.domain.general.repository.WhiteListedTokenRepository;
+import ru.team24.handler.exception.CustomSecurityExceptionHandler;
 import ru.team24.service.security.JwtService;
 import ru.team24.service.security.UserDetailsServiceImpl;
 
@@ -28,6 +29,7 @@ import ru.team24.service.security.UserDetailsServiceImpl;
 public class SecurityConfig {
     private JwtService jwtService;
     private WhiteListedTokenRepository whiteListedTokenRepository;
+    private final CustomSecurityExceptionHandler exceptionHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,6 +52,12 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
+
+                .exceptionHandling(exception ->
+                        exception
+                                .authenticationEntryPoint(exceptionHandler)
+                                .accessDeniedHandler(exceptionHandler))
+
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/auth").permitAll()
                         .anyRequest().authenticated());
@@ -62,7 +70,8 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider
+                .setUserDetailsService(userDetailsService());
         return authProvider;
     }
 

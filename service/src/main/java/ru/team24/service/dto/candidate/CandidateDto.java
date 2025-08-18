@@ -1,5 +1,4 @@
-package ru.team24.service.dto;
-
+package ru.team24.service.dto.candidate;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -43,6 +42,4 @@ public class CandidateDto {
     private String candidatePhone;
 
     private Date candidateCreatedAt;
-
-    private boolean candidateIsActive;
 }

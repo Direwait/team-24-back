@@ -1,6 +1,5 @@
-package ru.team24.controller.future.dto;
+package ru.team24.service.dto.candidate;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

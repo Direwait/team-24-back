@@ -1,4 +1,4 @@
-package ru.team24.service.domain.manager.impl;
+package ru.team24.service.domain.manager.unused;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,8 +6,7 @@ import ru.team24.service.dto.NotificationDto;
 import ru.team24.database.enums.NotificationState;
 import ru.team24.database.domain.manager.repository.NotificationRepository;
 import ru.team24.database.domain.manager.repository.RequestRepository;
-import ru.team24.service.domain.general.EmailService;
-import ru.team24.service.domain.manager.NotificationService;
+import ru.team24.service.domain.mail.EmailService;
 import ru.team24.service.mapper.NotificationMapper;
 
 import java.util.List;

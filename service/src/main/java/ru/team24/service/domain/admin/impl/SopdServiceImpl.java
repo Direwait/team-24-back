@@ -33,14 +33,13 @@ public class SopdServiceImpl implements SopdService {
 
     @Override
     public List<SopdDto> findAllSopds() {
-        List<SopdDto> sopdDtos = sopdRepository
+
+        return sopdRepository
                 .findAll()
                 .stream()
                 .filter(Sopd::isSopdIsActive)
                 .map(sopdMapper::entityToDto)
                 .toList();
-
-        return sopdDtos;
     }
 
 

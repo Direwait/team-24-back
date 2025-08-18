@@ -1,5 +1,6 @@
 package ru.team24.database.domain.manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.team24.database.domain.admin.entity.Sopd;
@@ -38,17 +39,21 @@ public class Request implements Serializable {
     @JoinColumn(name = "sopd_id", referencedColumnName = "sopd_id", nullable = false)
     private Sopd sopd;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "request_token", nullable = false, unique = true)
     private String requestToken;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "request_state")
     private RequestState requestState;
 
     @Builder.Default
+    @Column(name = "request_date")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date requestDate = new Date();
 
-    @Version
-    private long requestVersion;
+    @Builder.Default
+    @Column(name = "request_is_active")
+    private boolean requestIsActive = true;
 
     public long getUserId(){
         return user.getUserId();

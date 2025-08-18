@@ -1,12 +1,11 @@
-package ru.team24.controller.domain.manager.impl;
+package ru.team24.controller.domain.manager.unused;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.team24.controller.domain.manager.NotificationController;
 import ru.team24.service.dto.NotificationDto;
-import ru.team24.service.domain.manager.NotificationService;
+import ru.team24.service.domain.manager.unused.NotificationService;
 
 import java.util.List;
 

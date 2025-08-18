@@ -16,8 +16,6 @@ public class TemplateDto {
 
     private long userId;
 
-    private String templateName;
-
     private String templateSubject;
 
     private String templateBody;

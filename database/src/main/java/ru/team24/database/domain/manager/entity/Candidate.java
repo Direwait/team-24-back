@@ -1,5 +1,6 @@
 package ru.team24.database.domain.manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +32,7 @@ public class Candidate implements Serializable {
     private String candidateMail;
 
     @Column(name = "candidate_birth_date", nullable = false)
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private Date candidateBirthDate;
 
     @Column(name = "candidate_phone", nullable = false)
@@ -38,9 +40,6 @@ public class Candidate implements Serializable {
 
     @Builder.Default
     @Column(name = "candidate_created_at")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date candidateCreatedAt = new Date();
-
-    @Builder.Default
-    @Column(name = "candidate_is_active")
-    private boolean candidateIsActive = true;
 }

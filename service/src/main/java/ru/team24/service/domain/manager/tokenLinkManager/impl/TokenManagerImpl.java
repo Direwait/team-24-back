@@ -15,13 +15,7 @@ public class TokenManagerImpl implements TokenManager {
     private final RequestRepository requestRepository;
 
     public String generateAccessToken() {
-        log.info("уникальная ссылка");
         return UUID.randomUUID().toString();
     }
 
-    public boolean isTokenValid(String token) {
-        return requestRepository.findByRequestToken(token)
-                .filter(r -> !"EXPIRED".equals(r.getRequestToken()))
-                .isPresent();
-    }
 }

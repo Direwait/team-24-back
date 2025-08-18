@@ -1,6 +1,7 @@
 package ru.team24.service.domain.manager.impl;
 
-import jakarta.mail.MessagingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,22 +15,24 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team24.database.domain.admin.repository.SopdRepository;
 import ru.team24.database.domain.admin.repository.TemplateRepository;
+import ru.team24.database.domain.manager.entity.Request;
 import ru.team24.database.domain.manager.repository.CandidateRepository;
 import ru.team24.database.domain.general.repository.UserRepository;
 import ru.team24.database.domain.manager.repository.RequestRepository;
-import ru.team24.service.domain.manager.observ.ActionType;
-import ru.team24.service.domain.manager.observ.action.ActionRegisterNewCandidate;
-import ru.team24.service.domain.manager.observ.action.ActionSendLetterCandidate;
-import ru.team24.service.dto.RequestDto;
+import ru.team24.service.observ.ActionType;
+import ru.team24.service.observ.action.ActionCreateRequest;
+import ru.team24.service.observ.action.ActionSendLetterCandidate;
+import ru.team24.service.observ.action.ActionSendLetterToManager;
+import ru.team24.service.dto.request.RequestDto;
 import ru.team24.database.enums.RequestState;
 import ru.team24.service.domain.manager.RequestService;
-import ru.team24.service.domain.general.EmailService;
 import ru.team24.service.domain.manager.tokenLinkManager.TokenManager;
-import ru.team24.service.dto.TemplateDto;
+import ru.team24.service.dto.request.RequestWithCandidateDto;
+import ru.team24.service.mapper.CandidateMapper;
 import ru.team24.service.mapper.RequestMapper;
 import ru.team24.service.mapper.TemplateMapper;
 import ru.team24.service.payload.request.RequestStatusRequest;
-import ru.team24.service.payload.request.RequestUpdateRequest;
+import ru.team24.service.payload.request.CandidateResponse;
 
 import java.util.Date;
 import java.util.List;
@@ -40,103 +43,127 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
     private final ApplicationEventPublisher publisher;
 
+    private final TemplateMapper templateMapper;
+    private final CandidateMapper candidateMapper;
     private final RequestMapper requestMapper;
-    private final RequestRepository requestRepository;
 
+    private final RequestRepository requestRepository;
     private final CandidateRepository candidateRepository;
     private final UserRepository userRepository;
-
     private final TemplateRepository templateRepository;
     private final SopdRepository sopdRepository;
 
-    private final EmailService emailService;
-    private final TemplateMapper templateM;
-
     private final TokenManager linkService;
 
-
-    public RequestDto findByRequestId(long requestId) {
-        var request = requestRepository.findById(requestId).orElse(null);
-        return requestMapper.entityToDto(request);
+    @Override
+    public RequestWithCandidateDto findByRequestId(long requestId) {
+        return requestRepository.findById(requestId)
+                .map(requestMapper::entityToDtoWithCandidate)
+                .orElseThrow(() -> new EntityNotFoundException("Request not found with id: " + requestId));
     }
 
-    public List<RequestDto> getByUserId(long userId) {
+    @Override
+    public List<RequestWithCandidateDto> getByUserId(long userId) {
         return requestRepository.findAllByUser_UserId(userId).stream()
-                .map(requestMapper::entityToDto)
+                .map(requestMapper::entityToDtoWithCandidate)
                 .toList();
     }
 
     //переделать у нас Enum RequestState
-    public List<RequestDto> getByRequestState(String state) {
+    public List<RequestWithCandidateDto> getByRequestState(String state) {
         var requests = requestRepository.getByRequestState(RequestState.valueOf(state));
-        return requests.stream().map(requestMapper::entityToDto).toList();
+        return requests.stream().map(requestMapper::entityToDtoWithCandidate).toList();
     }
 
+    @Override
+    public Page<RequestWithCandidateDto> findRequests(
+            Long userId,
+            String state,
+            Pageable pageable) {
+
+        if (userId != null && state != null) {
+            throw new IllegalArgumentException("Use either userId OR state filter");
+        }
+
+        Page<Request> requestPage;
+
+        if (userId != null) {
+            requestPage = requestRepository.findAllByUser_UserId(userId, pageable);
+        }
+        else if (state != null) {
+            try {
+                RequestState requestState = RequestState.valueOf(state.toUpperCase());
+                requestPage = requestRepository.findByRequestState(requestState, pageable);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid state: " + state);
+            }
+        }
+        else {
+            requestPage = requestRepository.findAll(pageable);
+        }
+
+        return requestPage.map(requestMapper::entityToDtoWithCandidate);
+    }
+
+    //todo
+    //оно используется?
     public void updateRequestByRequestId(long requestId, RequestDto request) {
         request.setRequestId(requestId);
         requestRepository.save(requestMapper.dtoToEntity(request));
     }
 
+    //todo
+    //кинуть исключение в orElseThrow
     public boolean isRequestPending(RequestStatusRequest statusRequest) {
         var request = requestRepository.findByRequestToken(statusRequest.getToken()).orElseThrow();
         return request.getRequestState() == RequestState.PENDING;
     }
 
     @Override
-    public Page<RequestDto> getRequestsPage(Pageable pageable) {
-        return requestRepository.findAll(pageable)
-                .map(requestMapper::entityToDto);
-    }
+    public void updateRequest(CandidateResponse updateRequest) {
 
+        var candidate = candidateRepository.findByCandidateMail(updateRequest.getCandidateMail())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Candidate with email %s not found", updateRequest.getCandidateMail())
+                ));
 
-
-
-    ////todo
-    //надо пересмотреть
-    @Deprecated
-    public void updateRequest(RequestUpdateRequest updateRequest) {
-        //заменить на маппер
-        var candidate = candidateRepository.findByCandidateMail(updateRequest.getCandidateMail()).orElseThrow();
-        candidate.setCandidatePhone(updateRequest.getCandidatePhone());
-        candidate.setCandidateBirthDate(updateRequest.getCandidateBirthDate());
-        candidate.setCandidateFirstName(updateRequest.getCandidateFirstName());
-        candidate.setCandidateLastName(updateRequest.getCandidateLastName());
-        candidate.setCandidateFatherName(updateRequest.getCandidateFatherName());
+        candidateMapper.updateCandidateFromResponse(updateRequest, candidate);
         candidateRepository.save(candidate);
-        var request = requestRepository.findByCandidate(candidate).orElseThrow();
-        request.setRequestState(updateRequest.getRequestState());
 
+        var request = requestRepository.findByCandidate(candidate)
+                .orElseThrow(() -> new EntityNotFoundException(
+                String.format("Request with candidate %s not found", updateRequest.getCandidateMail())
+        ));
+
+        request.setRequestState(updateRequest.getRequestState());
         requestRepository.save(request);
 
-        var user = userRepository.findByUserId(request.getUserId()).orElseThrow();
-        var template = templateRepository.findByTemplateId(request.getTemplateId()).orElseThrow();
-        try {
-            emailService.sendEmail(template.getTemplateSubject(), template.getTemplateBody(), user.getUserMail());
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        var user = userRepository.findByUserId(request.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                String.format("User with %s not found", request.getRequestId())
+        ));
+
+        ActionSendLetterToManager letterManager = ActionSendLetterToManager.builder()
+                .managerMail(user.getUserMail())
+                .candidateMail(updateRequest.getCandidateMail())
+                .requestState(String.valueOf(updateRequest.getRequestState()))
+                .actionType(ActionType.SEND)
+                .build();
+
+        publisher.publishEvent(letterManager);
     }
 
-    //создание через клиент
-    //создание токена и создание запроса к кандидату
     @EventListener
     @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW) // каждая асинхронка в своей транзакции
-    public void createRequestWithTokenByClint(ActionRegisterNewCandidate action) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException {
 
-        log.info("внутри реквест сервиса");
-
-        // Всё сразу вытаскиваем из базы и превращаем в DTO/примитивы
         var oneTimeToken = linkService.generateAccessToken();
         var recentSopdId = sopdRepository.getRecentSopdId();
-
         var template = templateRepository.findTopByOrderByTemplateIdDesc()
-                .map(templateM::entityToDto)
+                .map(templateMapper::entityToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Template not found in DB"));
 
-        log.info("после загрузки и маппинга");
-
-        // Собираем DTO → потом маппер превратит в Entity, но уже в новом EntityManager-е
         var build = RequestDto.builder()
                 .requestDate(new Date())
                 .requestState(RequestState.PENDING)
@@ -147,43 +174,18 @@ public class RequestServiceImpl implements RequestService {
                 .requestToken(oneTimeToken)
                 .build();
 
-        log.info("после билда реквеста");
-
         var request = requestMapper.dtoToEntity(build);
         requestRepository.save(request);
-        log.info("после сохранения");
 
-        // Создаем отдельное событие — чистый объект без ссылок на Entity
+        String textContent = new ObjectMapper().readTree(template.getTemplateBody()).toString();
+
         ActionSendLetterCandidate letterCandidate = ActionSendLetterCandidate.builder()
                 .token(oneTimeToken)
-                .templateBody(template.getTemplateBody())
-                .templateName(template.getTemplateName())
+                .templateBody(textContent)
                 .templateSubject(template.getTemplateSubject())
                 .candidateMail(action.getCandidateMail())
                 .actionType(ActionType.SEND)
                 .build();
-
         publisher.publishEvent(letterCandidate);
     }
-
-    @Deprecated
-    @Transactional
-    public RequestDto createRequestWithToken(long candidateId, long templateId, long userId, long sopdId, String token) {
-
-        var build = RequestDto.builder()
-                .requestDate(new Date())
-                .requestState(RequestState.PENDING)
-                .userId(userId)
-                .sopdId(sopdId)
-                .candidateId(candidateId)
-                .templateId(templateId)
-                .requestToken(token)
-                .build();
-
-        var request = requestMapper.dtoToEntity(build);
-        requestRepository.save(request);
-
-        return build;
-    }
-
 }

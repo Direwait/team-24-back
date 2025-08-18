@@ -1,30 +1,31 @@
 package ru.team24.service.domain.manager;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.team24.service.domain.manager.observ.action.ActionRegisterNewCandidate;
-import ru.team24.service.dto.RequestDto;
+import ru.team24.service.observ.action.ActionCreateRequest;
+import ru.team24.service.dto.request.RequestDto;
 
+import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.payload.request.RequestStatusRequest;
-import ru.team24.service.payload.request.RequestUpdateRequest;
+import ru.team24.service.payload.request.CandidateResponse;
 import java.util.List;
 
 public interface RequestService {
-    RequestDto findByRequestId(long requestId);
+    RequestWithCandidateDto findByRequestId(long requestId);
 
-    List<RequestDto> getByUserId(long userId);
+    List<RequestWithCandidateDto> getByUserId(long userId);
 
-    List<RequestDto> getByRequestState(String state);
+    List<RequestWithCandidateDto> getByRequestState(String state);
 
     void updateRequestByRequestId(long requestId, RequestDto request);
 
     boolean isRequestPending(RequestStatusRequest statusRequest);
 
-    void updateRequest(RequestUpdateRequest updateRequest);
+    void updateRequest(CandidateResponse updateRequest);
 
-    //палидация запросов
-    Page<RequestDto> getRequestsPage(Pageable pageable);
+    Page<RequestWithCandidateDto> findRequests(Long userId, String state, Pageable pageable);
 
-    void createRequestWithTokenByClint(ActionRegisterNewCandidate action);
+    void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException;
 
 }
