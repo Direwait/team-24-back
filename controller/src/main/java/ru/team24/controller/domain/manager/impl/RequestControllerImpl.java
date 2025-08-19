@@ -1,6 +1,7 @@
 package ru.team24.controller.domain.manager.impl;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ import ru.team24.controller.domain.manager.RequestController;
 import ru.team24.service.dto.request.RequestDto;
 import ru.team24.service.domain.manager.RequestService;
 import ru.team24.service.dto.request.RequestWithCandidateDto;
+import ru.team24.service.observ.action.ActionCreateRequest;
+import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 import ru.team24.service.security.UserDetailsImpl;
@@ -34,7 +37,6 @@ public class RequestControllerImpl implements RequestController {
     }
 
     @Deprecated
-    @Override
     public ResponseEntity<?> getByUserId(long id) {
         return null;
     }
@@ -59,15 +61,15 @@ public class RequestControllerImpl implements RequestController {
 
     // todo
     // перепроверить новую палидацию
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<PagedModel<EntityModel<RequestWithCandidateDto>>> getRequests(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(required = false) String state,
             @PageableDefault Pageable pageable,
             PagedResourcesAssembler<RequestWithCandidateDto> assembler) {
 
-        Page<RequestWithCandidateDto> page = requestService.findRequests(userDetails.getId(), state, pageable);
-        PagedModel<EntityModel<RequestWithCandidateDto>> model = assembler.toModel(page);
+        Page<RequestWithCandidateDto> currentPage = requestService.findRequests(userDetails.getId(), state, pageable);
+        PagedModel<EntityModel<RequestWithCandidateDto>> model = assembler.toModel(currentPage);
         
         return ResponseEntity.ok(model);
     }
@@ -81,6 +83,14 @@ public class RequestControllerImpl implements RequestController {
     @PatchMapping()
     public ResponseEntity<?> updateRequest(@RequestBody CandidateResponse requestUpdate) {
         requestService.updateRequest(requestUpdate);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> createRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody RequestCreationRequest createRequest) throws JsonProcessingException {
+
+        requestService.createRequestsByCandidateMail(createRequest, userDetails.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

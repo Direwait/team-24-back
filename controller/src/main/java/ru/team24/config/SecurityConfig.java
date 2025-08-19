@@ -3,6 +3,7 @@ package ru.team24.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -67,7 +68,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/auth").permitAll()
                         .requestMatchers("/api/v1/requests/status").permitAll()
-                        .requestMatchers("/api/v1/requests").permitAll()
+                        .requestMatchers(HttpMethod.PATCH,"/api/v1/requests").permitAll()
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);

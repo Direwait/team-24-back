@@ -7,6 +7,7 @@ import ru.team24.service.observ.action.ActionCreateRequest;
 import ru.team24.service.dto.request.RequestDto;
 
 import ru.team24.service.dto.request.RequestWithCandidateDto;
+import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 import java.util.List;
@@ -27,5 +28,8 @@ public interface RequestService {
     Page<RequestWithCandidateDto> findRequests(Long userId, String state, Pageable pageable);
 
     void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException;
+
+    void createRequestsByCandidateMail(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException;
+
 
 }

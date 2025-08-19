@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team24.database.domain.admin.repository.SopdRepository;
 import ru.team24.database.domain.admin.repository.TemplateRepository;
+import ru.team24.database.domain.manager.entity.Candidate;
 import ru.team24.database.domain.manager.entity.Request;
 import ru.team24.database.domain.manager.repository.CandidateRepository;
 import ru.team24.database.domain.general.repository.UserRepository;
@@ -31,6 +32,7 @@ import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.mapper.CandidateMapper;
 import ru.team24.service.mapper.RequestMapper;
 import ru.team24.service.mapper.TemplateMapper;
+import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 
@@ -84,7 +86,6 @@ public class RequestServiceImpl implements RequestService {
         if (userId != null && state != null) {
             throw new IllegalArgumentException("Use either userId OR state filter");
         }
-
         Page<Request> requestPage;
 
         if (userId != null) {
@@ -109,6 +110,7 @@ public class RequestServiceImpl implements RequestService {
     //оно используется?
     public void updateRequestByRequestId(long requestId, RequestDto request) {
         request.setRequestId(requestId);
+        request.setRequestIsActive(true);
         requestRepository.save(requestMapper.dtoToEntity(request));
     }
 
@@ -116,6 +118,7 @@ public class RequestServiceImpl implements RequestService {
     //кинуть исключение в orElseThrow
     public boolean isRequestPending(RequestStatusRequest statusRequest) {
         var request = requestRepository.findByRequestToken(statusRequest.getToken()).orElseThrow();
+        request.setRequestIsActive(true);
         return request.getRequestState() == RequestState.PENDING;
     }
 
@@ -136,6 +139,7 @@ public class RequestServiceImpl implements RequestService {
         ));
 
         request.setRequestState(updateRequest.getRequestState());
+        request.setRequestIsActive(true);
         requestRepository.save(request);
 
         var user = userRepository.findByUserId(request.getUserId())
@@ -175,9 +179,10 @@ public class RequestServiceImpl implements RequestService {
                 .build();
 
         var request = requestMapper.dtoToEntity(build);
+        request.setRequestIsActive(true);
         requestRepository.save(request);
 
-        String textContent = new ObjectMapper().readTree(template.getTemplateBody()).toString();
+        String textContent = template.getTemplateBody();
 
         ActionSendLetterCandidate letterCandidate = ActionSendLetterCandidate.builder()
                 .token(oneTimeToken)
@@ -187,5 +192,23 @@ public class RequestServiceImpl implements RequestService {
                 .actionType(ActionType.SEND)
                 .build();
         publisher.publishEvent(letterCandidate);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void createRequestsByCandidateMail(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException {
+        var emails = createRequest.getEmails();
+        var candidate = new Candidate();
+        for (var email : emails) {
+            candidate.setCandidateMail(email);
+            candidateRepository.save(candidate);
+            candidate = candidateRepository.findByCandidateMail(email).orElseThrow(EntityNotFoundException::new);
+            var action = ActionCreateRequest
+                    .builder()
+                    .candidateId(candidate.getCandidateId())
+                    .candidateMail(email)
+                    .userId(userId)
+                    .build();
+            createRequestWithTokenByClient(action);
+        }
     }
 }
