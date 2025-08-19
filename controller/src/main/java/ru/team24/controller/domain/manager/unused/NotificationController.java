@@ -1,4 +1,4 @@
-package ru.team24.controller.domain.manager;
+package ru.team24.controller.domain.manager.unused;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

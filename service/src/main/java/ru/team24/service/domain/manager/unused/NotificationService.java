@@ -1,4 +1,4 @@
-package ru.team24.service.domain.manager;
+package ru.team24.service.domain.manager.unused;
 
 import ru.team24.service.dto.NotificationDto;
 

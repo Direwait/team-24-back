@@ -29,17 +29,15 @@ CREATE TABLE if not exists candidate (
     candidate_mail VARCHAR(100),
     candidate_birth_date DATE,
     candidate_phone VARCHAR(20),
-    candidate_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    candidate_is_active BOOLEAN DEFAULT TRUE
+    candidate_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Создание таблицы Template (шаблоны писем)
 CREATE TABLE if not exists templates (
     template_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT REFERENCES users(user_id),
-    template_name VARCHAR(100) NOT NULL UNIQUE,
     template_subject VARCHAR(255) NOT NULL,
-    template_body TEXT NOT NULL,
+    template_body JSON NOT NULL,
     template_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     template_updated_at TIMESTAMP,
     template_is_active BOOLEAN DEFAULT TRUE
@@ -65,8 +63,7 @@ CREATE TABLE if not exists request (
     request_token VARCHAR(100) NOT NULL UNIQUE,
     request_state VARCHAR(20), --CHECK (request_state IN ('PENDING', 'APPROVED', 'REJECTED', 'EXPIRED')) DEFAULT 'PENDING',
     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    request_is_active BOOLEAN DEFAULT TRUE,
-    request_version BIGINT
+    request_is_active BOOLEAN DEFAULT TRUE
 );
 
 -- Создание таблицы Notification (уведомления)

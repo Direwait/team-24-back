@@ -29,18 +29,28 @@ VALUES
 INSERT INTO templates (template_name, template_subject, template_body, user_id)
 VALUES
     ('Приглашение на собеседование',
-     'Приглашение на позицию {{position}}',
+     'Приглашение на позицию Дворник',
      '
-     <!DOCTYPE html>
-     <html>
-     <body>
-         <h1>Уважаемый {{name}}!</h1>
-         <p>Мы рады пригласить вас на собеседование на позицию.</p>
-         <p>Для подтверждения даты и времени пройдите по ссылке:</p>
-         <a href="{token}">Подтвердить участие</a>
-         <p>Ссылка одноразовая</p>
-     </body>
-     </html>
+     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+             <tr>
+                 <td style="padding: 40px; background: #ffffff; border-radius: 16px;">
+                     <h1 style="color: #20222c; font-size: 32px; margin: 0 0 20px 0; line-height: 1.2;">
+                         Привет!
+                     </h1>
+                     <p style="font-size: 16px; line-height: 1.5; margin: 0 0 16px 0; color: #333333;">
+                         Мы рады, что вы приняли наше предложение о работе в Т1!
+                     </p>
+                     <p style="font-size: 16px; line-height: 1.5; margin: 0 0 16px 0; color: #333333;">
+                         Заполнить регистрационные данные в нашей системе по ссылке:
+                         <a href="{token}" style="color: #1281E2; text-decoration: none; font-weight: 600;">ССЫЛКА</a>
+                     </p>
+                     <p style="font-size: 16px; line-height: 1.5; margin: 0; color: red;">
+                         Если у вас возникнут вопросы, обращайтесь – с радостью поможем!<br>
+                         С уважением, команда Холдинга Т1.
+                     </p>
+                 </td>
+             </tr>
+         </table>
      ',
      1);
 

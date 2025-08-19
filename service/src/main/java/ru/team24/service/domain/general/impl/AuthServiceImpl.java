@@ -2,6 +2,7 @@ package ru.team24.service.domain.general.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,20 +35,25 @@ public class AuthServiceImpl implements AuthService {
     private JwtService jwtService;
     @Autowired
     private RefreshTokenService refreshTokenService;
-    public SignInResponse signIn(SignInRequest signInRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword())
-        );
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtService.generateToken(authentication);
-        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        var refreshToken = refreshTokenService.generateRefreshToken(userDetails.getId());
-        var response =  new SignInResponse();
-        response.setRole(roles.getFirst());
-        response.setAccessToken(jwt);
-        response.setRefreshToken(refreshToken.getRefreshToken());
-        return response;
+
+    public SignInResponse signIn(SignInRequest signInRequest) throws BadCredentialsException {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword())
+            );
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtService.generateToken(authentication);
+            List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+            var refreshToken = refreshTokenService.generateRefreshToken(userDetails.getId());
+            var response = new SignInResponse();
+            response.setRole(roles.getFirst());
+            response.setAccessToken(jwt);
+            response.setRefreshToken(refreshToken.getRefreshToken());
+            return response;
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Неверный email или пароль");
+        }
     }
 
     public void logout(LogoutRequest logoutRequest) {

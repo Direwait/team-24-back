@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.team24.database.domain.general.repository.WhiteListedTokenRepository;
+import ru.team24.handler.exception.CustomSecurityExceptionHandler;
 import ru.team24.service.security.JwtService;
 import ru.team24.service.security.UserDetailsServiceImpl;
 
@@ -33,6 +34,7 @@ import java.util.List;
 public class SecurityConfig {
     private JwtService jwtService;
     private WhiteListedTokenRepository whiteListedTokenRepository;
+    private final CustomSecurityExceptionHandler exceptionHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,6 +58,12 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
+
+                .exceptionHandling(exception ->
+                        exception
+                                .authenticationEntryPoint(exceptionHandler)
+                                .accessDeniedHandler(exceptionHandler))
+
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/auth").permitAll()
                         .requestMatchers("/api/v1/requests/status").permitAll()
@@ -70,7 +78,8 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider
+                .setUserDetailsService(userDetailsService());
         return authProvider;
     }
 

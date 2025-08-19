@@ -3,19 +3,24 @@ package ru.team24.controller.domain.manager.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.domain.manager.RequestController;
-import ru.team24.service.dto.RequestDto;
+import ru.team24.service.dto.request.RequestDto;
 import ru.team24.service.domain.manager.RequestService;
+import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.payload.request.RequestStatusRequest;
-import ru.team24.service.payload.request.RequestUpdateRequest;
+import ru.team24.service.payload.request.CandidateResponse;
+import ru.team24.service.security.UserDetailsImpl;
 
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/api/v1/requests")
 @RestController
@@ -28,25 +33,57 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
     }
 
+    @Deprecated
+    @Override
+    public ResponseEntity<?> getByUserId(long id) {
+        return null;
+    }
+
+    @Deprecated
     @GetMapping("/getByUserId/{userId}")
-    public ResponseEntity<?> getByUserId(@PathVariable long userId) {
-        return new ResponseEntity<>(requestService.getByUserId(userId), HttpStatus.OK);
+    public ResponseEntity<List<RequestWithCandidateDto>> getByUserId(
+            @PathVariable long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sort) {
+
+        return ResponseEntity.ok(requestService.getByUserId(userId));
     }
 
+    @Deprecated
     @GetMapping("/getByState/{requestState}")
-    public ResponseEntity<List<?>> getByRequestState(@PathVariable String requestState) {
-        return new ResponseEntity<>(requestService.getByRequestState(requestState), HttpStatus.OK);
+    public ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(
+            @PathVariable String requestState) {
+        return ResponseEntity.ok(requestService.getByRequestState(requestState));
     }
 
+    // todo
+    // перепроверить новую палидацию
+    @GetMapping
+    public ResponseEntity<PagedModel<EntityModel<RequestWithCandidateDto>>> getRequests(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(required = false) String state,
+            @PageableDefault Pageable pageable,
+            PagedResourcesAssembler<RequestWithCandidateDto> assembler) {
+
+        Page<RequestWithCandidateDto> page = requestService.findRequests(userDetails.getId(), state, pageable);
+        PagedModel<EntityModel<RequestWithCandidateDto>> model = assembler.toModel(page);
+        
+        return ResponseEntity.ok(model);
+    }
+
+    // todo
+    //это надо?
     public ResponseEntity<?> updateRequestByRequestId(long requestId, RequestDto requestDto) {
         return null;
     }
 
     @PatchMapping()
-    public ResponseEntity<?> updateRequest(@RequestBody RequestUpdateRequest requestUpdate) {
+    public ResponseEntity<?> updateRequest(@RequestBody CandidateResponse requestUpdate) {
         requestService.updateRequest(requestUpdate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @PostMapping("/status")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {
@@ -54,18 +91,5 @@ public class RequestControllerImpl implements RequestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping("/page={page}")
-    public ResponseEntity<Map<String, Object>> getRequestsPage(@PathVariable int page) {
-        // Получаем страницу с 10 элементами, отсортированными по ID в обратном порядке
-        Page<RequestDto> result = requestService.getRequestsPage(
-                PageRequest.of(page, 10, Sort.by("requestId").ascending())
-        );
-
-        return ResponseEntity.ok(Map.of(
-                "requests", result.getContent(),
-                "pages", result.getTotalPages()
-        ));
     }
 }

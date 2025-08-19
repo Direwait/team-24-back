@@ -1,4 +1,4 @@
-package ru.team24.service.domain.manager.observ;
+package ru.team24.service.observ;
 
 public enum ActionType {
     CREATE,

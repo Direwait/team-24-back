@@ -10,10 +10,9 @@ import ru.team24.database.domain.manager.entity.Candidate;
 import ru.team24.database.domain.manager.entity.Request;
 import ru.team24.database.enums.RequestState;
 import ru.team24.database.domain.manager.repository.RequestRepository;
-import ru.team24.service.domain.manager.observ.action.ActionRegisterNewCandidate;
-import ru.team24.service.domain.manager.observ.ActionType;
-import ru.team24.service.domain.manager.observ.event.NewCandidateEvent;
-import ru.team24.service.dto.CandidateDto;
+import ru.team24.service.observ.action.ActionCreateRequest;
+import ru.team24.service.observ.ActionType;
+import ru.team24.service.dto.candidate.CandidateDto;
 import ru.team24.database.domain.manager.repository.CandidateRepository;
 import ru.team24.service.domain.manager.CandidateService;
 import ru.team24.service.mapper.CandidateMapper;
@@ -42,6 +41,7 @@ public class CandidateServiceImpl implements CandidateService {
                 .toList();
     }
 
+    @Deprecated //тут нет менеджера из клиента, используйте нижний метод в своей цепи
     @Transactional
     @Override
     public void addCandidateByMail(List<String> mails) {
@@ -58,8 +58,6 @@ public class CandidateServiceImpl implements CandidateService {
         candidateRepository.saveAll(candidates);
     }
 
-    //паттерн наблюдатель
-    //при добавлении почты, создать запрос со сгерированной ссылкой
     @Transactional
     @Override
     public void addCandidateByMail(List<String> mails, long managerId) {
@@ -77,19 +75,19 @@ public class CandidateServiceImpl implements CandidateService {
         candidateRepository.saveAll(candidates);
 
         candidates.forEach(candidate -> {
-            ActionRegisterNewCandidate actionInfo = ActionRegisterNewCandidate.builder()
+            ActionCreateRequest actionInfo = ActionCreateRequest.builder()
                     .userId(managerId)
                     .candidateId(candidate.getCandidateId())
                     .candidateMail(candidate.getCandidateMail())
                     .actionType(ActionType.CREATE)
                     .build();
-            log.info("дошли до первого публикатора {}",candidate.getCandidateMail());
             publisher.publishEvent(actionInfo);
         });
     }
 
     //пересмотреть
     //при обновлении кандидатом, отправить уведомление через почту/тг менеджеру
+    // возможно можно удалить
     @Transactional
     public void updateCandidateData(String token, CandidateDto updatedCandidateDto) {
         Request request = requestRepository.findByRequestToken(token)
@@ -103,4 +101,5 @@ public class CandidateServiceImpl implements CandidateService {
         request.setRequestState(RequestState.APPROVED);
         requestRepository.save(request);
     }
+
 }

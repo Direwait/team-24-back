@@ -1,4 +1,4 @@
-package ru.team24.service.domain.general.impl;
+package ru.team24.service.domain.mail.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -11,12 +11,21 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team24.service.domain.general.EmailService;
-import ru.team24.service.domain.manager.observ.action.ActionSendLetterCandidate;
+import ru.team24.service.domain.mail.EmailService;
+import ru.team24.service.observ.action.ActionSendLetterCandidate;
+import ru.team24.service.observ.action.ActionSendLetterToManager;
 
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
+    private static final String MANAGER_SUBJECT = "Статус заявки изменён";
+    private static final String MANAGER_TEMPLATE = """
+        <html>
+            <body>
+            <p>Статус заявки кандидата %s %s изменен на %s</p>
+            </body>
+        </html>
+        """;
 
     @Value("${spring.mail.username}")
     private String emailFrom;
@@ -26,21 +35,29 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendEmail(String subject, String body, String emailTo) throws MessagingException {
+    @EventListener
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void sendToManager(ActionSendLetterToManager action) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom(emailFrom);
-        helper.setTo(emailTo);
-        helper.setSubject(subject);
-        helper.setText(body, true);
-        mailSender.send(message); //раскомментить по нужде
 
+        helper.setFrom(emailFrom);
+        helper.setTo(action.getManagerMail());
+        helper.setSubject(MANAGER_SUBJECT);
+
+        var format = String.format(MANAGER_TEMPLATE,
+                action.getCandidateLastName(),
+                action.getCandidateFirstName(),
+                action.getRequestState());
+
+        helper.setText(format, true);
+        mailSender.send(message);
     }
 
-
-    @EventListener(classes = ActionSendLetterCandidate.class)
+    @EventListener
     @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW) // Новая транзакция
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendToCandidate(ActionSendLetterCandidate action) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -56,4 +73,5 @@ public class EmailServiceImpl implements EmailService {
         helper.setText(emailBody,true);
         mailSender.send(message);
     }
+
 }

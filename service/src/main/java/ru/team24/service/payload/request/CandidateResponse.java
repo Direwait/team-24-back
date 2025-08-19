@@ -8,12 +8,13 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class RequestUpdateRequest {
+public class CandidateResponse {
     private String candidateMail;
     private String candidateFirstName;
     private String candidateLastName;
     private String candidateFatherName;
     private Date candidateBirthDate;
     private String candidatePhone;
+
     private RequestState requestState;
 }

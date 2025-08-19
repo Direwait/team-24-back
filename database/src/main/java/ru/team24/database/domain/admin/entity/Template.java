@@ -1,5 +1,6 @@
 package ru.team24.database.domain.admin.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,9 +26,6 @@ public class Template {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "template_name", nullable = false, unique = true)
-    private String templateName;
-
     @Column(name = "template_subject", nullable = false)
     private String templateSubject;
 
@@ -35,9 +33,11 @@ public class Template {
     private String templateBody;
 
     @Column(name = "template_created_at")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date templateCreatedAt = new Date();
 
     @Column(name = "template_updated_at")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date templateUpdatedAt;
 
     @Column(name = "template_is_active")
