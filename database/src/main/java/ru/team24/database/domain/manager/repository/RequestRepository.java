@@ -25,7 +25,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
 
     @EntityGraph(attributePaths = {"candidate"})
-    Page<Request> findAllByUser_UserIdAndRequestStateAndRequestIsActive(
+    Page<Request> findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
             Long userId,
             RequestState requestState,
             boolean requestIsActive,
@@ -33,8 +33,11 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     );
 
     @EntityGraph(attributePaths = {"candidate"})
-    Page<Request> findAllByUser_UserId(Long userId, Pageable pageable);
+    Page<Request> findAllByUser_UserIdAndRequestIsActiveOrderByRequestDate(
+            Long userId,
+            boolean requestIsActive,
+            Pageable pageable);
 
     @EntityGraph(attributePaths = {"candidate"})
-    List<Request> getByRequestState(RequestState requestState);
+    List<Request> getByRequestStateOrderByRequestDate(RequestState requestState);
 }

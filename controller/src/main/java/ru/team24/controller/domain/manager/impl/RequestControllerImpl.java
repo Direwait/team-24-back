@@ -33,30 +33,6 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
     }
 
-    @Deprecated
-    @Override
-    public ResponseEntity<?> getByUserId(long id) {
-        return null;
-    }
-
-    @Deprecated
-    @GetMapping("/getByUserId/{userId}")
-    public ResponseEntity<List<RequestWithCandidateDto>> getByUserId(
-            @PathVariable long userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String sort) {
-
-        return ResponseEntity.ok(requestService.getByUserId(userId));
-    }
-
-    @Deprecated
-    @GetMapping("/getByState/{requestState}")
-    public ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(
-            @PathVariable String requestState) {
-        return ResponseEntity.ok(requestService.getByRequestState(requestState));
-    }
-
     // todo
     // перепроверить новую палидацию
     @GetMapping

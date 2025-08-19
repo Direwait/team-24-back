@@ -61,18 +61,6 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new EntityNotFoundException("Request not found with id: " + requestId));
     }
 
-    @Override
-    public List<RequestWithCandidateDto> getByUserId(long userId) {
-        return requestRepository.findAllByUser_UserId(userId, Pageable.unpaged()).stream()
-                .map(requestMapper::entityToDtoWithCandidate)
-                .toList();
-    }
-
-    @Override
-    public List<RequestWithCandidateDto> getByRequestState(String state) {
-        var requests = requestRepository.getByRequestState(RequestState.valueOf(state));
-        return requests.stream().map(requestMapper::entityToDtoWithCandidate).toList();
-    }
 
     @Override
     public Page<RequestWithCandidateDto> findRequests(
@@ -81,7 +69,10 @@ public class RequestServiceImpl implements RequestService {
             Pageable pageable) {
         Page<Request> page;
         if (state == null || state.isEmpty() || state.equalsIgnoreCase("all")) {
-            page = requestRepository.findAllByUser_UserId(userId, pageable);
+            page = requestRepository.findAllByUser_UserIdAndRequestIsActiveOrderByRequestDate(
+                    userId,
+                    true,
+                    pageable);
         } else {
             RequestState requestState;
             try {
@@ -91,7 +82,7 @@ public class RequestServiceImpl implements RequestService {
                         ". Valid values: " + Arrays.toString(RequestState.values()));
             }
             page = requestRepository
-                    .findAllByUser_UserIdAndRequestStateAndRequestIsActive(
+                    .findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
                             userId,
                             requestState,
                             true,

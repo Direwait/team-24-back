@@ -49,7 +49,6 @@ public class TemplateServiceImpl implements TemplateService {
         var template = templateMapper.dtoToEntity(templateDto);
         template.setTemplateUpdatedAt(new Date());
         template.setTemplateId(null);
-        template.setTemplateName("name placeholder");
         template.setTemplateIsActive(true);
         templateRepository.save(template);
     }
