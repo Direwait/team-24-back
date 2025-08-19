@@ -1,5 +1,6 @@
 package ru.team24.service.domain.general.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Service;
 import ru.team24.database.domain.general.entity.RefreshToken;
 import ru.team24.database.domain.general.repository.UserRepository;
 import ru.team24.service.domain.general.AuthService;
-import ru.team24.service.payload.request.LogoutRequest;
-import ru.team24.service.payload.request.RefreshRequest;
 import ru.team24.service.payload.request.SignInRequest;
 import ru.team24.service.payload.response.RefreshResponse;
 import ru.team24.service.payload.response.SignInResponse;
@@ -56,19 +55,28 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    public void logout(LogoutRequest logoutRequest) {
-        jwtService.deleteToken(logoutRequest.getAccessToken());
-        refreshTokenService.deleteRefreshToken(logoutRequest.getRefreshToken());
+    public void logout(String accessToken, String refreshToken) {
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
+        jwtService.deleteToken(accessToken);
+        refreshTokenService.deleteRefreshToken(refreshToken);
     }
 
-    public RefreshResponse refresh(RefreshRequest refreshRequest) {
-        String refreshToken = refreshRequest.getRefreshToken();
+    public RefreshResponse refresh(String accessToken, String refreshToken) {
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
+        var refreshTokenEntity = refreshTokenService.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Token %s is not found", refreshToken)));
+        var role = refreshTokenEntity.getUser().getRole().getRoleName();
+        jwtService.deleteToken(accessToken);
         return refreshTokenService.findByRefreshToken(refreshToken)
                 .map(refreshTokenService::checkExpired)
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String token = jwtService.generateTokenByLogin(user.getUserMail());
-                    return new RefreshResponse(token);
+                    return new RefreshResponse(role, token);
                 }).orElseThrow(() -> new RuntimeException("Refresh token is missing"));
     }
 }

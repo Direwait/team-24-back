@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth").permitAll()
                         .requestMatchers("/api/v1/requests/status").permitAll()
                         .requestMatchers(HttpMethod.PATCH,"/api/v1/requests").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/v1/requests").permitAll()
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);

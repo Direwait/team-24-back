@@ -17,7 +17,6 @@ import ru.team24.controller.domain.manager.RequestController;
 import ru.team24.service.dto.request.RequestDto;
 import ru.team24.service.domain.manager.RequestService;
 import ru.team24.service.dto.request.RequestWithCandidateDto;
-import ru.team24.service.observ.action.ActionCreateRequest;
 import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
@@ -90,7 +89,7 @@ public class RequestControllerImpl implements RequestController {
     public ResponseEntity<?> createRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody RequestCreationRequest createRequest) throws JsonProcessingException {
 
-        requestService.createRequestsByCandidateMail(createRequest, userDetails.getId());
+        requestService.createRequests(createRequest, userDetails.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -101,5 +100,11 @@ public class RequestControllerImpl implements RequestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PatchMapping("/{requestId}")
+    public ResponseEntity<?> deleteRequest(@PathVariable long requestId) {
+        requestService.softDeleteRequest(requestId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -29,7 +29,9 @@ public interface RequestService {
 
     void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException;
 
-    void createRequestsByCandidateMail(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException;
+    void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException;
+
+    void softDeleteRequest(long requestId);
 
 
 }

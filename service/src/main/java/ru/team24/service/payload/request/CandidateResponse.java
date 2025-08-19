@@ -9,7 +9,6 @@ import java.util.Date;
 @Getter
 @Setter
 public class CandidateResponse {
-    private String candidateMail;
     private String candidateFirstName;
     private String candidateLastName;
     private String candidateFatherName;
@@ -17,4 +16,5 @@ public class CandidateResponse {
     private String candidatePhone;
 
     private RequestState requestState;
+    private String requestToken;
 }

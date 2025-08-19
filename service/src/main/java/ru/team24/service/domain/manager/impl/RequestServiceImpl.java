@@ -124,19 +124,17 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void updateRequest(CandidateResponse updateRequest) {
-
-        var candidate = candidateRepository.findByCandidateMail(updateRequest.getCandidateMail())
+        var request = requestRepository.findByRequestToken(updateRequest.getRequestToken()).orElseThrow(() ->
+                new EntityNotFoundException(
+                String.format("Request with token %s not found", updateRequest.getRequestToken())
+        ));
+        var candidate = candidateRepository.findByCandidateId(request.getCandidateId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Candidate with email %s not found", updateRequest.getCandidateMail())
+                        String.format("Candidate with id %s not found", request.getCandidateId())
                 ));
 
         candidateMapper.updateCandidateFromResponse(updateRequest, candidate);
         candidateRepository.save(candidate);
-
-        var request = requestRepository.findByCandidate(candidate)
-                .orElseThrow(() -> new EntityNotFoundException(
-                String.format("Request with candidate %s not found", updateRequest.getCandidateMail())
-        ));
 
         request.setRequestState(updateRequest.getRequestState());
         request.setRequestIsActive(true);
@@ -149,7 +147,9 @@ public class RequestServiceImpl implements RequestService {
 
         ActionSendLetterToManager letterManager = ActionSendLetterToManager.builder()
                 .managerMail(user.getUserMail())
-                .candidateMail(updateRequest.getCandidateMail())
+                .candidateMail(candidate.getCandidateMail())
+                .candidateFirstName(updateRequest.getCandidateFirstName())
+                .candidateLastName(updateRequest.getCandidateLastName())
                 .requestState(String.valueOf(updateRequest.getRequestState()))
                 .actionType(ActionType.SEND)
                 .build();
@@ -195,20 +195,30 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void createRequestsByCandidateMail(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException {
+    public void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException {
         var emails = createRequest.getEmails();
-        var candidate = new Candidate();
         for (var email : emails) {
+            var candidate = new Candidate();
+
             candidate.setCandidateMail(email);
-            candidateRepository.save(candidate);
-            candidate = candidateRepository.findByCandidateMail(email).orElseThrow(EntityNotFoundException::new);
+            candidate = candidateRepository.save(candidate);
             var action = ActionCreateRequest
                     .builder()
                     .candidateId(candidate.getCandidateId())
                     .candidateMail(email)
                     .userId(userId)
+                    .actionType(ActionType.SEND)
                     .build();
             createRequestWithTokenByClient(action);
         }
+    }
+
+    public void softDeleteRequest(long requestId) {
+        var request = requestRepository.findByRequestId(requestId).orElse(null);
+        if(request == null) { return; }
+
+        request.setRequestIsActive(false);
+        requestRepository.save(request);
+
     }
 }

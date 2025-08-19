@@ -1,6 +1,7 @@
 package ru.team24.config;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.team24.database.domain.general.repository.WhiteListedTokenRepository;
 import ru.team24.service.security.JwtService;
@@ -42,7 +45,13 @@ public class TokenFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             var jwt = header.substring(7);
             if(whiteListedTokenRepository.existsByToken(jwt)) {
-                String login = jwtService.getLoginFromToken(jwt);
+                String login = "";
+                try {
+                    login = jwtService.getLoginFromToken(jwt);
+                } catch (ExpiredJwtException e){
+                    filterChain.doFilter(request, response);
+                    return;
+                }
                 UserDetails userDetails = userDetailsService.loadUserByUsername(login);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails,
