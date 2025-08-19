@@ -70,8 +70,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider
-                .setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService());
         return authProvider;
     }
 
@@ -79,5 +78,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 }
 

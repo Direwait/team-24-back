@@ -84,7 +84,6 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     //
     @GetMapping("/status")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {

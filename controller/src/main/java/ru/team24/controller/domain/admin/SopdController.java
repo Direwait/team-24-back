@@ -17,7 +17,11 @@ public interface SopdController {
             @RequestBody String sopdText
     );
 
-    ResponseEntity<Void> deleteSopds(@PathVariable long id);
+    ResponseEntity<Void> deleteSopds(
+            @PathVariable long id
+    );
 
-    ResponseEntity<Void> deleteSopdReal(@PathVariable long id);
+    ResponseEntity<Void> deleteSopdReal(
+            @PathVariable long id
+    );
 }

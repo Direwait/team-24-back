@@ -1,7 +1,5 @@
 package ru.team24.service.domain.manager.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +32,7 @@ import ru.team24.service.mapper.TemplateMapper;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -64,12 +63,12 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<RequestWithCandidateDto> getByUserId(long userId) {
-        return requestRepository.findAllByUser_UserId(userId).stream()
+        return requestRepository.findAllByUser_UserId(userId, Pageable.unpaged()).stream()
                 .map(requestMapper::entityToDtoWithCandidate)
                 .toList();
     }
 
-    //переделать у нас Enum RequestState
+    @Override
     public List<RequestWithCandidateDto> getByRequestState(String state) {
         var requests = requestRepository.getByRequestState(RequestState.valueOf(state));
         return requests.stream().map(requestMapper::entityToDtoWithCandidate).toList();
@@ -77,43 +76,48 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Page<RequestWithCandidateDto> findRequests(
-            Long userId,
+            long userId,
             String state,
             Pageable pageable) {
-
-        if (userId != null && state != null) {
-            throw new IllegalArgumentException("Use either userId OR state filter");
-        }
-
-        Page<Request> requestPage;
-
-        if (userId != null) {
-            requestPage = requestRepository.findAllByUser_UserId(userId, pageable);
-        }
-        else if (state != null) {
+        Page<Request> page;
+        if (state == null || state.isEmpty() || state.equalsIgnoreCase("all")) {
+            page = requestRepository.findAllByUser_UserId(userId, pageable);
+        } else {
+            RequestState requestState;
             try {
-                RequestState requestState = RequestState.valueOf(state.toUpperCase());
-                requestPage = requestRepository.findByRequestState(requestState, pageable);
+                requestState = RequestState.valueOf(state.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid state: " + state);
+                throw new IllegalArgumentException("Invalid request state: " + state +
+                        ". Valid values: " + Arrays.toString(RequestState.values()));
             }
+            page = requestRepository
+                    .findAllByUser_UserIdAndRequestStateAndRequestIsActive(
+                            userId,
+                            requestState,
+                            true,
+                            pageable
+                    );
         }
-        else {
-            requestPage = requestRepository.findAll(pageable);
-        }
-
-        return requestPage.map(requestMapper::entityToDtoWithCandidate);
+        return page.map(requestMapper::entityToDtoWithCandidate);
     }
 
-    //todo
-    //оно используется?
+    @Override
+    public void deleteRequest(long requestId) {
+        requestRepository.deleteById(requestId);
+    }
+
+    @Override
+    public void deleteRequestReal(long requestId) {
+        requestRepository.getReferenceById(requestId).setRequestIsActive(false);
+    }
+
+    @Override
     public void updateRequestByRequestId(long requestId, RequestDto request) {
         request.setRequestId(requestId);
         requestRepository.save(requestMapper.dtoToEntity(request));
     }
 
-    //todo
-    //кинуть исключение в orElseThrow
+    @Override
     public boolean isRequestPending(RequestStatusRequest statusRequest) {
         var request = requestRepository.findByRequestToken(statusRequest.getToken()).orElseThrow();
         return request.getRequestState() == RequestState.PENDING;
@@ -140,7 +144,7 @@ public class RequestServiceImpl implements RequestService {
 
         var user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                String.format("User with %s not found", request.getRequestId())
+                String.format("User with Id %s not found", request.getRequestId())
         ));
 
         ActionSendLetterToManager letterManager = ActionSendLetterToManager.builder()
@@ -156,7 +160,7 @@ public class RequestServiceImpl implements RequestService {
     @EventListener
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException {
+    public void createRequestWithTokenByClient(ActionCreateRequest action) {
 
         var oneTimeToken = linkService.generateAccessToken();
         var recentSopdId = sopdRepository.getRecentSopdId();
@@ -177,11 +181,9 @@ public class RequestServiceImpl implements RequestService {
         var request = requestMapper.dtoToEntity(build);
         requestRepository.save(request);
 
-        String textContent = new ObjectMapper().readTree(template.getTemplateBody()).toString();
-
         ActionSendLetterCandidate letterCandidate = ActionSendLetterCandidate.builder()
                 .token(oneTimeToken)
-                .templateBody(textContent)
+                .templateBody(template.getTemplateBody())
                 .templateSubject(template.getTemplateSubject())
                 .candidateMail(action.getCandidateMail())
                 .actionType(ActionType.SEND)

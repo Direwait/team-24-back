@@ -2,6 +2,7 @@ package ru.team24.controller.domain.general.impl;
 
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class AuthControllerImpl implements AuthController {
     private AuthService authService;
 
     @PostMapping()
-    public ResponseEntity<?> signIn(@RequestBody SignInRequest signInRequest) throws BadCredentialsException {
+    public ResponseEntity<?> signIn(@Valid @RequestBody SignInRequest signInRequest) throws BadCredentialsException {
         return new ResponseEntity<>(authService.signIn(signInRequest), HttpStatus.OK);
     }
 

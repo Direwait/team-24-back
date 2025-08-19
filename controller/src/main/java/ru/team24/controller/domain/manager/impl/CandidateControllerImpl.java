@@ -1,5 +1,6 @@
 package ru.team24.controller.domain.manager.impl;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,38 +21,30 @@ import java.util.Map;
 public class CandidateControllerImpl implements CandidateController {
     private final CandidateService candidateService;
 
-    @RequestMapping("/v1/candidates")
-    @GetMapping("/{candidateId}")
+    @GetMapping("/v1/candidates/{candidateId}")
     public ResponseEntity<?> findCandidateId(@PathVariable long candidateId) {
         return new ResponseEntity<>(candidateService.findCandidateById(candidateId),HttpStatus.OK);
     }
 
-    // это используется ?
-    @RequestMapping("/v1/candidates")
-    @GetMapping()
+    @GetMapping("/v1/candidates")
     public ResponseEntity<List<?>> findAllCandidates() {
         return new ResponseEntity<>(candidateService.findAllCandidates(),HttpStatus.OK);
     }
 
-    @RequestMapping("/v1/candidates")
-    @Deprecated //тут передаются как [mail, mail, mail]
-    @PostMapping()
+    @PostMapping("/v1/candidates")
     public ResponseEntity<?> addCandidateByMail(@RequestBody List<String> emails) {
         candidateService.addCandidateByMail(emails);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    //тут длинная цепочка менеджера, логика добавление кандидата в приложение,
-    // комментарий можно удалить как и requestMapping  у каждого котроллера
-    @RequestMapping("/v2/candidates")
-    @PostMapping()
+    @PostMapping("/v2/candidates")
     public ResponseEntity<Map<String, String>> link(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody EmailsDto emails
+            @RequestBody @Valid EmailsDto emails
     )
     {
         var managerId = userDetails.getId();
-        candidateService.addCandidateByMail(emails.getEmails(), managerId);
+        candidateService.addCandidateByMail(emails.getEmails().stream().toList(), managerId);
         return ResponseEntity.ok().build();
     }
 }

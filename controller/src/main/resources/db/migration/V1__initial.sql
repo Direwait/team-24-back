@@ -37,7 +37,7 @@ CREATE TABLE if not exists templates (
     template_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT REFERENCES users(user_id),
     template_subject VARCHAR(255) NOT NULL,
-    template_body JSON NOT NULL,
+    template_body TEXT NOT NULL,
     template_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     template_updated_at TIMESTAMP,
     template_is_active BOOLEAN DEFAULT TRUE

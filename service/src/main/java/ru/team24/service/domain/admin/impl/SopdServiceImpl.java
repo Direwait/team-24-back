@@ -42,7 +42,6 @@ public class SopdServiceImpl implements SopdService {
                 .toList();
     }
 
-
     @Transactional
     @Override
     public SopdDto createSopd(SopdDto dto) {
@@ -55,11 +54,9 @@ public class SopdServiceImpl implements SopdService {
     @Override
     public SopdDto updateSopd(long id, SopdDto dto) {
         Sopd sopd = sopdRepository.findById(id)
-                .orElseThrow(
-                        () -> {
+                .orElseThrow(() -> {
                             return new EntityNotFoundException("Sopd with ID " + id + " dont found");
-                        });
-
+                });
         sopdMapper.updateFromDto(dto, sopd);
         sopd.setSopdUpdatedAt(new Date());
         Sopd updatedBook = sopdRepository.save(sopd);
@@ -70,10 +67,7 @@ public class SopdServiceImpl implements SopdService {
     @Transactional
     @Override
     public void deleteSopd(long id) {
-        Sopd sopd = sopdRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Sopd not found with id: " + id));
-        sopd.setSopdIsActive(false);
-        sopdRepository.save(sopd);
+        sopdRepository.getReferenceById(id).setSopdIsActive(false);
     }
 
     @Override

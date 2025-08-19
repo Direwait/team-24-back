@@ -19,22 +19,22 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     Optional<Request> findByRequestId(long requestId);
 
-    @EntityGraph(attributePaths = {"candidate"})
-    List<Request> findAllByUser_UserId(Long userId);
-
-    @EntityGraph(attributePaths = {"candidate"})
-    List<Request> getByRequestState(RequestState requestState);
-
     Optional<Request> findByRequestToken(String requestToken);
 
     Optional<Request> findByCandidate(Candidate candidate);
 
+
     @EntityGraph(attributePaths = {"candidate"})
-    Page<Request> findByRequestState(RequestState requestState, Pageable pageable);
+    Page<Request> findAllByUser_UserIdAndRequestStateAndRequestIsActive(
+            Long userId,
+            RequestState requestState,
+            boolean requestIsActive,
+            Pageable pageable
+    );
 
     @EntityGraph(attributePaths = {"candidate"})
     Page<Request> findAllByUser_UserId(Long userId, Pageable pageable);
 
-//    @EntityGraph(attributePaths = {"candidate"})
-//    Page<Request> findAllActiveRequests(Pageable pageable);
+    @EntityGraph(attributePaths = {"candidate"})
+    List<Request> getByRequestState(RequestState requestState);
 }
