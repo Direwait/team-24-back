@@ -85,8 +85,7 @@ public class RequestControllerImpl implements RequestController {
     }
 
 
-    //
-    @GetMapping("/status")
+    @PostMapping("/status")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {
         if (requestService.isRequestPending(statusRequest)) {
             return new ResponseEntity<>(HttpStatus.OK);

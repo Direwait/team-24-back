@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.service.dto.SopdDto;
+import ru.team24.service.payload.request.SopdUpdateRequest;
 import ru.team24.service.security.UserDetailsImpl;
 
 
@@ -14,7 +15,7 @@ public interface SopdController {
 
     ResponseEntity<SopdDto> updateSopds(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody String sopdText
+            @RequestBody SopdUpdateRequest sopdUpdateRequest
     );
 
     ResponseEntity<Void> deleteSopds(@PathVariable long id);
