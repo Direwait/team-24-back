@@ -26,9 +26,9 @@ VALUES
     ('Сергей', 'Иванов', 'Петрович', 'sergey@example.com', '1990-05-15', '+79161234567'),
     (NULL, NULL, NULL, 'ivan@example.com', NULL, NULL);
 
-INSERT INTO templates (template_name, template_subject, template_body, user_id)
+INSERT INTO templates (template_subject, template_body, user_id)
 VALUES
-    ('Приглашение на собеседование',
+    (
      'Приглашение на позицию Дворник',
      '
      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">

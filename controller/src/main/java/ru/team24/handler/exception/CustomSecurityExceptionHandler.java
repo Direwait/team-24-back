@@ -35,6 +35,16 @@ public class CustomSecurityExceptionHandler implements
                 errorMessage,
                 request.getRequestURI());
     }
+//    @Override
+//    public void commence(HttpServletRequest request, HttpServletResponse response,
+//                         AuthenticationException authException) throws IOException {
+//        throw request; // отдаём дальше в @ControllerAdvice
+//    }
+//    @Override
+//    public void handle(HttpServletRequest request, HttpServletResponse response,
+//                       AccessDeniedException accessDeniedException) throws IOException {
+//        throw accessDeniedException; // отдаём дальше в @ControllerAdvice
+//    }
 
     @Override
     public void handle(HttpServletRequest request,

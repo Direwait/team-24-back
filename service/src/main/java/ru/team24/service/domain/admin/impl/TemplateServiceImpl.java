@@ -29,13 +29,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public void deleteTemplate(long templateId) {
-        var template = templateRepository.findTopByOrderByTemplateIdDesc()
-                .filter(Template::isTemplateIsActive)
-                .orElseThrow(() -> {
-            return new EntityNotFoundException("Template by Id"+ templateId + " + not found");
-        });
-        template.setTemplateIsActive(false);
-        templateRepository.save(template);
+        templateRepository.getReferenceById(templateId).setTemplateIsActive(false);
     }
 
     @Override
@@ -55,7 +49,6 @@ public class TemplateServiceImpl implements TemplateService {
         var template = templateMapper.dtoToEntity(templateDto);
         template.setTemplateUpdatedAt(new Date());
         template.setTemplateId(null);
-        template.setTemplateName("name placeholder");
         template.setTemplateIsActive(true);
         templateRepository.save(template);
     }

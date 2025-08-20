@@ -13,12 +13,17 @@ public interface TemplateController {
     @Operation(
             summary = "Получение шаблона по Id"
     )
-    ResponseEntity<?> findTemplateById(@PathVariable long id);
+    ResponseEntity<?> findTemplateById(
+            @PathVariable long id
+    );
 
     @Operation(
             summary = "Изменение шаблона по Id"
     )
-    ResponseEntity<?> updateTemplateById(@PathVariable long templateId, @RequestBody TemplateDto templateDto);
+    ResponseEntity<?> updateTemplateById(
+            @PathVariable long templateId,
+            @RequestBody TemplateDto templateDto
+    );
 
     @Operation(
             summary = "Добавление нового шаблона"
@@ -30,7 +35,11 @@ public interface TemplateController {
     )
     ResponseEntity<?> findRecentTemplate();
 
-    ResponseEntity<Void> deleteTemplate(@PathVariable long id);
+    ResponseEntity<Void> deleteTemplate(
+            @PathVariable long id
+    );
 
-    ResponseEntity<Void> deleteTemplateReal(@PathVariable long id);
+    ResponseEntity<Void> deleteTemplateReal(
+            @PathVariable long id
+    );
 }
