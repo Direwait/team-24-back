@@ -19,21 +19,24 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     Optional<Request> findByRequestId(long requestId);
 
-    @EntityGraph(attributePaths = {"candidate"})
-    List<Request> findAllByUser_UserId(Long userId);
-
-    @EntityGraph(attributePaths = {"candidate"})
-    List<Request> getByRequestState(RequestState requestState);
-
     Optional<Request> findByRequestToken(String requestToken);
 
     Optional<Request> findByCandidate(Candidate candidate);
 
-    @EntityGraph(attributePaths = {"candidate"})
-    Page<Request> findByRequestState(RequestState requestState, Pageable pageable);
 
     @EntityGraph(attributePaths = {"candidate"})
-    Page<Request> findAllByUser_UserId(Long userId, Pageable pageable);
+    Page<Request> findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
+            Long userId,
+            RequestState requestState,
+            boolean requestIsActive,
+            Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = {"candidate"})
+    Page<Request> findAllByUser_UserIdAndRequestIsActiveOrderByRequestDate(
+            Long userId,
+            boolean requestIsActive,
+            Pageable pageable);
 
     @EntityGraph(attributePaths = {"candidate"})
     Page<Request> findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
@@ -51,7 +54,4 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @EntityGraph(attributePaths = {"candidate"})
     List<Request> getByRequestStateOrderByRequestDate(RequestState requestState);
-
-//    @EntityGraph(attributePaths = {"candidate"})
-//    Page<Request> findAllActiveRequests(Pageable pageable);
 }

@@ -1,7 +1,5 @@
 package ru.team24.controller.domain.general.impl;
 
-
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;

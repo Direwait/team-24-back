@@ -98,6 +98,7 @@ VALUES
     ',
     3);
 
+
 -- 5. Затем SOPD (зависит от users)
 INSERT INTO sopd (user_id, sopd_text)
 VALUES

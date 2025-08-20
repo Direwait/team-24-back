@@ -1,5 +1,6 @@
 package ru.team24.service.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -39,5 +40,6 @@ public class RequestWithCandidateDto {
 
     @NotNull(message = "Request date is required")
     @PastOrPresent(message = "Request date must be in the past or present")
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date requestDate;
 }

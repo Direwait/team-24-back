@@ -1,6 +1,5 @@
 package ru.team24.service.domain.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.team24.service.observ.action.ActionCreateRequest;
@@ -15,10 +14,6 @@ import java.util.List;
 public interface RequestService {
     RequestWithCandidateDto findByRequestId(long requestId);
 
-    List<RequestWithCandidateDto> getByUserId(long userId);
-
-    List<RequestWithCandidateDto> getByRequestState(String state);
-
     void updateRequestByRequestId(long requestId, RequestDto request);
 
     boolean isRequestPending(RequestStatusRequest statusRequest);
@@ -27,7 +22,11 @@ public interface RequestService {
 
     Page<RequestWithCandidateDto> findRequests(long userId, String state, Pageable pageable);
 
-    void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException;
+    void createRequestWithTokenByClient(ActionCreateRequest action);
+
+    void deleteRequest(long requestId);
+
+    void deleteRequestReal(long requestId);
 
     void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException;
 

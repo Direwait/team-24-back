@@ -1,5 +1,6 @@
 package ru.team24.controller.domain.manager.impl;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,23 +28,24 @@ public class CandidateControllerImpl implements CandidateController {
         return new ResponseEntity<>(candidateService.findCandidateById(candidateId),HttpStatus.OK);
     }
 
-    // это используется ?
+
     @GetMapping()
     @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<List<?>> findAllCandidates() {
         return new ResponseEntity<>(candidateService.findAllCandidates(),HttpStatus.OK);
     }
+
     //тут длинная цепочка менеджера, логика добавление кандидата в приложение,
     // комментарий можно удалить как и requestMapping  у каждого котроллера
     @PostMapping()
     @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<Map<String, String>> link(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody EmailsDto emails
+            @RequestBody @Valid EmailsDto emails
     )
     {
         var managerId = userDetails.getId();
-        candidateService.addCandidateByMail(emails.getEmails(), managerId);
+        candidateService.addCandidateByMail(emails.getEmails().stream().toList(), managerId);
         return ResponseEntity.ok().build();
     }
 }

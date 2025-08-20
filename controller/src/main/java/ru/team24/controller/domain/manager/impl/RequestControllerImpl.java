@@ -85,6 +85,7 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
     @PostMapping()
     @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> createRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -93,7 +94,6 @@ public class RequestControllerImpl implements RequestController {
         requestService.createRequests(createRequest, userDetails.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @PostMapping("/status")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {

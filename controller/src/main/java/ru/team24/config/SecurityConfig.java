@@ -18,16 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.team24.database.domain.general.repository.WhiteListedTokenRepository;
 import ru.team24.handler.exception.CustomSecurityExceptionHandler;
 import ru.team24.service.security.JwtService;
 import ru.team24.service.security.TokenFilter;
 import ru.team24.service.security.UserDetailsServiceImpl;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -56,7 +51,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sessionManagement -> {
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
@@ -68,10 +62,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/auth").permitAll()
+                                      
                         .requestMatchers("/api/v1/requests/status").permitAll()
                         .requestMatchers(HttpMethod.PATCH,"/api/v1/requests").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/v1/requests").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/v1/sopds/recent").permitAll()
+
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -82,8 +78,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider
-                .setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService());
         return authProvider;
     }
 
@@ -91,17 +86,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }
 

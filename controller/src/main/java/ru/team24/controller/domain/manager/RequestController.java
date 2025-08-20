@@ -16,21 +16,19 @@ import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.payload.request.CandidateResponse;
 import ru.team24.service.security.UserDetailsImpl;
 
-import java.util.List;
-
 @Tag(name = "Request. Запросы кандидатам", description = "Операции связанные с запросами-СОПД")
 public interface RequestController {
 
     @Operation(
-            summary = "Получение кандидата по Id Запроса-СОПД"
+            summary = "Получение запроса по Id"
     )
     ResponseEntity<?> findByRequestId(long id);
-
 
     @Operation(
             summary = "Получение списка запросов-СОПД по статусу. Request State"
     )
     ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(String state);
+
 
     @Operation(
             summary = "Обновление запроса-СОПД по Id"
@@ -49,5 +47,4 @@ public interface RequestController {
             @RequestParam(required = false) String state,
             @PageableDefault Pageable pageable,
             PagedResourcesAssembler<RequestWithCandidateDto> assembler);
-
 }

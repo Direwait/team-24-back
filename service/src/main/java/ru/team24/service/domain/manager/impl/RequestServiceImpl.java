@@ -1,7 +1,5 @@
 package ru.team24.service.domain.manager.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,18 +63,6 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new EntityNotFoundException("Request not found with id: " + requestId));
     }
 
-    @Override
-    public List<RequestWithCandidateDto> getByUserId(long userId) {
-        return requestRepository.findAllByUser_UserId(userId).stream()
-                .map(requestMapper::entityToDtoWithCandidate)
-                .toList();
-    }
-
-    //переделать у нас Enum RequestState
-    public List<RequestWithCandidateDto> getByRequestState(String state) {
-        var requests = requestRepository.getByRequestState(RequestState.valueOf(state));
-        return requests.stream().map(requestMapper::entityToDtoWithCandidate).toList();
-    }
 
     public Page<RequestWithCandidateDto> findRequests(
             long userId,
@@ -107,16 +93,24 @@ public class RequestServiceImpl implements RequestService {
         return page.map(requestMapper::entityToDtoWithCandidate);
     }
 
-    //todo
-    //оно используется?
+    @Override
+    public void deleteRequest(long requestId) {
+        requestRepository.deleteById(requestId);
+    }
+
+    @Override
+    public void deleteRequestReal(long requestId) {
+        requestRepository.getReferenceById(requestId).setRequestIsActive(false);
+    }
+
+    @Override
     public void updateRequestByRequestId(long requestId, RequestDto request) {
         request.setRequestId(requestId);
         request.setRequestIsActive(true);
         requestRepository.save(requestMapper.dtoToEntity(request));
     }
 
-    //todo
-    //кинуть исключение в orElseThrow
+    @Override
     public boolean isRequestPending(RequestStatusRequest statusRequest) {
         var request = requestRepository.findByRequestToken(statusRequest.getToken()).orElseThrow();
         request.setRequestIsActive(true);
@@ -143,7 +137,7 @@ public class RequestServiceImpl implements RequestService {
 
         var user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                String.format("User with %s not found", request.getRequestId())
+                String.format("User with Id %s not found", request.getRequestId())
         ));
 
         ActionSendLetterToManager letterManager = ActionSendLetterToManager.builder()
@@ -161,7 +155,7 @@ public class RequestServiceImpl implements RequestService {
     @EventListener
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException {
+    public void createRequestWithTokenByClient(ActionCreateRequest action) {
 
         var oneTimeToken = linkService.generateAccessToken();
         var recentSopdId = sopdRepository.getRecentSopdId();
@@ -183,11 +177,9 @@ public class RequestServiceImpl implements RequestService {
         request.setRequestIsActive(true);
         requestRepository.save(request);
 
-        String textContent = template.getTemplateBody();
-
         ActionSendLetterCandidate letterCandidate = ActionSendLetterCandidate.builder()
                 .token(oneTimeToken)
-                .templateBody(textContent)
+                .templateBody(template.getTemplateBody())
                 .templateSubject(template.getTemplateSubject())
                 .candidateMail(action.getCandidateMail())
                 .actionType(ActionType.SEND)

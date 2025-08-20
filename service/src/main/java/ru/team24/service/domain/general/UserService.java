@@ -10,4 +10,5 @@ public interface UserService {
 
     boolean existsByUserMail(String mail);
     void addUser(UserDto userDto);
+
 }
