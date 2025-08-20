@@ -24,6 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.team24.database.domain.general.repository.WhiteListedTokenRepository;
 import ru.team24.handler.exception.CustomSecurityExceptionHandler;
 import ru.team24.service.security.JwtService;
+import ru.team24.service.security.TokenFilter;
 import ru.team24.service.security.UserDetailsServiceImpl;
 
 import java.util.List;

@@ -11,6 +11,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.domain.manager.RequestController;
@@ -31,17 +32,14 @@ public class RequestControllerImpl implements RequestController {
     private final RequestService requestService;
 
     @GetMapping("/{requestId}")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> findByRequestId(@PathVariable long requestId) {
         return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
     }
 
     @Deprecated
-    public ResponseEntity<?> getByUserId(long id) {
-        return null;
-    }
-
-    @Deprecated
     @GetMapping("/getByUserId/{userId}")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<List<RequestWithCandidateDto>> getByUserId(
             @PathVariable long userId,
             @RequestParam(defaultValue = "0") int page,
@@ -53,6 +51,7 @@ public class RequestControllerImpl implements RequestController {
 
     @Deprecated
     @GetMapping("/getByState/{requestState}")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(
             @PathVariable String requestState) {
         return ResponseEntity.ok(requestService.getByRequestState(requestState));
@@ -61,6 +60,7 @@ public class RequestControllerImpl implements RequestController {
     // todo
     // перепроверить новую палидацию
     @GetMapping()
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<PagedModel<EntityModel<RequestWithCandidateDto>>> getRequests(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(required = false) String state,
@@ -86,6 +86,7 @@ public class RequestControllerImpl implements RequestController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> createRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody RequestCreationRequest createRequest) throws JsonProcessingException {
 
@@ -95,6 +96,7 @@ public class RequestControllerImpl implements RequestController {
 
 
     @PostMapping("/status")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {
         if (requestService.isRequestPending(statusRequest)) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -103,6 +105,7 @@ public class RequestControllerImpl implements RequestController {
     }
 
     @PatchMapping("/{requestId}")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> deleteRequest(@PathVariable long requestId) {
         requestService.softDeleteRequest(requestId);
         return new ResponseEntity<>(HttpStatus.OK);

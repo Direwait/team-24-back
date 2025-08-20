@@ -1,4 +1,4 @@
-package ru.team24.config;
+package ru.team24.service.security;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -15,11 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.team24.database.domain.general.repository.WhiteListedTokenRepository;
-import ru.team24.service.security.JwtService;
 
 import java.io.IOException;
 

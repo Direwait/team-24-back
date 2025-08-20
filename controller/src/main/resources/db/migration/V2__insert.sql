@@ -6,7 +6,7 @@ INSERT INTO roles (role_name, viewing_my_requests, viewing_all_requests, creatin
 VALUES
     ('ADMIN', TRUE, TRUE, TRUE, TRUE),
     ('MANAGER', TRUE, FALSE, TRUE, FALSE),
-    ('Рекрутер', TRUE, FALSE, TRUE, FALSE);
+    ('SUPER_ADMIN', TRUE, TRUE, TRUE, TRUE);
 
 -- 2. Затем пользователей (зависит от roles)
 INSERT INTO users (role_id, user_mail, user_password, user_first_name, user_last_name, user_is_active)
@@ -51,7 +51,13 @@ VALUES
              </tr>
          </table>
      ',
-     1);
+     1),
+    ('Ссылка на заполнение формы',
+    '
+    <h1>Привет!</h1><div><br></div><div><br></div><div><br></div><div><br></div><p></p><div>Перейди пожалуйста по <a href="{token}">ссылке&nbsp;</a><br>С уважением, команда Холдинга Т1</div><div><br></div><div><br></div><div><br></div><div><br></div><div><br>---<br>Письмо отправлено автоматически из системы подбора персонала. Пожалуйста, не отвечайте на него.</div><p></p><p></p>
+
+    ',
+    1);
 
 -- 5. Затем SOPD (зависит от users)
 INSERT INTO sopd (user_id, sopd_text)
@@ -62,8 +68,8 @@ VALUES
 -- 6. Затем запросы (зависит от users, candidate, templates, sopd)
 INSERT INTO request (user_id, candidate_id, template_id, sopd_id, request_token, request_state)
 VALUES
-    (1, 1, 1, 1, 'token123', 'PENDING'),
-    (2, 2, 1, NULL, 'token456', 'APPROVED');
+    (4, 1, 1, 1, 'token123', 'PENDING'),
+    (4, 2, 1, NULL, 'token456', 'APPROVED');
 
 -- 7. Затем уведомления (зависит от request)
 INSERT INTO notification (request_id, notification_text, notification_state)

@@ -26,10 +26,6 @@ public interface RequestController {
     )
     ResponseEntity<?> findByRequestId(long id);
 
-    @Operation(
-            summary = "Получение кандидата по Id"
-    )
-    ResponseEntity<?> getByUserId(long id);
 
     @Operation(
             summary = "Получение списка запросов-СОПД по статусу. Request State"
