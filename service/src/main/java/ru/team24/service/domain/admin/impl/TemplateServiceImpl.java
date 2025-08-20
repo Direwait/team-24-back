@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.team24.database.domain.admin.entity.Template;
+import ru.team24.database.domain.general.repository.UserRepository;
 import ru.team24.service.dto.TemplateDto;
 import ru.team24.database.domain.admin.repository.TemplateRepository;
 import ru.team24.service.domain.admin.TemplateService;
@@ -16,6 +17,7 @@ import java.util.Date;
 public class TemplateServiceImpl implements TemplateService {
     private final TemplateMapper templateMapper;
     private final TemplateRepository templateRepository;
+    private final UserRepository userRepository; // TBD later
 
     @Override
     public TemplateDto findTemplateById(long templateId) {
@@ -50,6 +52,8 @@ public class TemplateServiceImpl implements TemplateService {
         template.setTemplateUpdatedAt(new Date());
         template.setTemplateId(null);
         template.setTemplateIsActive(true);
+        Long id = 3L; // TBD later
+        template.setUser(userRepository.findById(id).orElseThrow(EntityNotFoundException::new)); // TBD later
         templateRepository.save(template);
     }
 

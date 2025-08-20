@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team24.database.domain.admin.repository.SopdRepository;
 import ru.team24.database.domain.admin.repository.TemplateRepository;
+import ru.team24.database.domain.manager.entity.Candidate;
 import ru.team24.database.domain.manager.entity.Request;
 import ru.team24.database.domain.manager.repository.CandidateRepository;
 import ru.team24.database.domain.general.repository.UserRepository;
@@ -29,6 +30,7 @@ import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.mapper.CandidateMapper;
 import ru.team24.service.mapper.RequestMapper;
 import ru.team24.service.mapper.TemplateMapper;
+import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 
@@ -62,7 +64,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
 
-    @Override
     public Page<RequestWithCandidateDto> findRequests(
             long userId,
             String state,
@@ -105,32 +106,33 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public void updateRequestByRequestId(long requestId, RequestDto request) {
         request.setRequestId(requestId);
+        request.setRequestIsActive(true);
         requestRepository.save(requestMapper.dtoToEntity(request));
     }
 
     @Override
     public boolean isRequestPending(RequestStatusRequest statusRequest) {
         var request = requestRepository.findByRequestToken(statusRequest.getToken()).orElseThrow();
+        request.setRequestIsActive(true);
         return request.getRequestState() == RequestState.PENDING;
     }
 
     @Override
     public void updateRequest(CandidateResponse updateRequest) {
-
-        var candidate = candidateRepository.findByCandidateMail(updateRequest.getCandidateMail())
+        var request = requestRepository.findByRequestToken(updateRequest.getRequestToken()).orElseThrow(() ->
+                new EntityNotFoundException(
+                String.format("Request with token %s not found", updateRequest.getRequestToken())
+        ));
+        var candidate = candidateRepository.findByCandidateId(request.getCandidateId())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Candidate with email %s not found", updateRequest.getCandidateMail())
+                        String.format("Candidate with id %s not found", request.getCandidateId())
                 ));
 
         candidateMapper.updateCandidateFromResponse(updateRequest, candidate);
         candidateRepository.save(candidate);
 
-        var request = requestRepository.findByCandidate(candidate)
-                .orElseThrow(() -> new EntityNotFoundException(
-                String.format("Request with candidate %s not found", updateRequest.getCandidateMail())
-        ));
-
         request.setRequestState(updateRequest.getRequestState());
+        request.setRequestIsActive(true);
         requestRepository.save(request);
 
         var user = userRepository.findByUserId(request.getUserId())
@@ -140,7 +142,9 @@ public class RequestServiceImpl implements RequestService {
 
         ActionSendLetterToManager letterManager = ActionSendLetterToManager.builder()
                 .managerMail(user.getUserMail())
-                .candidateMail(updateRequest.getCandidateMail())
+                .candidateMail(candidate.getCandidateMail())
+                .candidateFirstName(updateRequest.getCandidateFirstName())
+                .candidateLastName(updateRequest.getCandidateLastName())
                 .requestState(String.valueOf(updateRequest.getRequestState()))
                 .actionType(ActionType.SEND)
                 .build();
@@ -170,6 +174,7 @@ public class RequestServiceImpl implements RequestService {
                 .build();
 
         var request = requestMapper.dtoToEntity(build);
+        request.setRequestIsActive(true);
         requestRepository.save(request);
 
         ActionSendLetterCandidate letterCandidate = ActionSendLetterCandidate.builder()
@@ -180,5 +185,33 @@ public class RequestServiceImpl implements RequestService {
                 .actionType(ActionType.SEND)
                 .build();
         publisher.publishEvent(letterCandidate);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException {
+        var emails = createRequest.getEmails();
+        for (var email : emails) {
+            var candidate = new Candidate();
+
+            candidate.setCandidateMail(email);
+            candidate = candidateRepository.save(candidate);
+            var action = ActionCreateRequest
+                    .builder()
+                    .candidateId(candidate.getCandidateId())
+                    .candidateMail(email)
+                    .userId(userId)
+                    .actionType(ActionType.SEND)
+                    .build();
+            createRequestWithTokenByClient(action);
+        }
+    }
+
+    public void softDeleteRequest(long requestId) {
+        var request = requestRepository.findByRequestId(requestId).orElse(null);
+        if(request == null) { return; }
+
+        request.setRequestIsActive(false);
+        requestRepository.save(request);
+
     }
 }

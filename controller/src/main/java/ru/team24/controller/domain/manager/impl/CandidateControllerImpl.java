@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.domain.manager.CandidateController;
@@ -15,29 +16,29 @@ import java.util.List;
 import java.util.Map;
 
 
-@RequestMapping("/api")
+@RequestMapping("/api/v1/candidates")
 @RestController
 @RequiredArgsConstructor
 public class CandidateControllerImpl implements CandidateController {
     private final CandidateService candidateService;
 
-    @GetMapping("/v1/candidates/{candidateId}")
+    @GetMapping("/{candidateId}")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> findCandidateId(@PathVariable long candidateId) {
         return new ResponseEntity<>(candidateService.findCandidateById(candidateId),HttpStatus.OK);
     }
 
-    @GetMapping("/v1/candidates")
+
+    @GetMapping()
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<List<?>> findAllCandidates() {
         return new ResponseEntity<>(candidateService.findAllCandidates(),HttpStatus.OK);
     }
 
-    @PostMapping("/v1/candidates")
-    public ResponseEntity<?> addCandidateByMail(@RequestBody List<String> emails) {
-        candidateService.addCandidateByMail(emails);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PostMapping("/v2/candidates")
+    //тут длинная цепочка менеджера, логика добавление кандидата в приложение,
+    // комментарий можно удалить как и requestMapping  у каждого котроллера
+    @PostMapping()
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<Map<String, String>> link(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody @Valid EmailsDto emails

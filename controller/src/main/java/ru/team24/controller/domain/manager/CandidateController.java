@@ -26,11 +26,6 @@ public interface CandidateController {
     ResponseEntity<List<?>> findAllCandidates();
 
     @Operation(
-            summary = "Добавление новых кандидатов по почте"
-    )
-    ResponseEntity<?> addCandidateByMail(@RequestBody List<String> emails);
-
-    @Operation(
             summary = "Версия 2. Добавление новых кандидатов по почте"
     )
     ResponseEntity<Map<String, String>> link(

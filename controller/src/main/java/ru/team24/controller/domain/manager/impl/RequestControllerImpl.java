@@ -1,6 +1,7 @@
 package ru.team24.controller.domain.manager.impl;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,12 +11,14 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.domain.manager.RequestController;
 import ru.team24.service.dto.request.RequestDto;
 import ru.team24.service.domain.manager.RequestService;
 import ru.team24.service.dto.request.RequestWithCandidateDto;
+import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 import ru.team24.service.security.UserDetailsImpl;
@@ -29,21 +32,43 @@ public class RequestControllerImpl implements RequestController {
     private final RequestService requestService;
 
     @GetMapping("/{requestId}")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> findByRequestId(@PathVariable long requestId) {
         return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
     }
 
+    @Deprecated
+    @GetMapping("/getByUserId/{userId}")
+    @PreAuthorize("hasAuthority('MANAGER')")
+    public ResponseEntity<List<RequestWithCandidateDto>> getByUserId(
+            @PathVariable long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sort) {
+
+        return ResponseEntity.ok(requestService.getByUserId(userId));
+    }
+
+    @Deprecated
+    @GetMapping("/getByState/{requestState}")
+    @PreAuthorize("hasAuthority('MANAGER')")
+    public ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(
+            @PathVariable String requestState) {
+        return ResponseEntity.ok(requestService.getByRequestState(requestState));
+    }
+
     // todo
     // перепроверить новую палидацию
-    @GetMapping
+    @GetMapping()
+    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<PagedModel<EntityModel<RequestWithCandidateDto>>> getRequests(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(required = false) String state,
             @PageableDefault Pageable pageable,
             PagedResourcesAssembler<RequestWithCandidateDto> assembler) {
 
-        Page<RequestWithCandidateDto> page = requestService.findRequests(userDetails.getId(), state, pageable);
-        PagedModel<EntityModel<RequestWithCandidateDto>> model = assembler.toModel(page);
+        Page<RequestWithCandidateDto> currentPage = requestService.findRequests(userDetails.getId(), state, pageable);
+        PagedModel<EntityModel<RequestWithCandidateDto>> model = assembler.toModel(currentPage);
         
         return ResponseEntity.ok(model);
     }
@@ -60,12 +85,28 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //
-    @GetMapping("/status")
+
+    @PostMapping()
+    @PreAuthorize("hasAuthority('MANAGER')")
+    public ResponseEntity<?> createRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody RequestCreationRequest createRequest) throws JsonProcessingException {
+
+        requestService.createRequests(createRequest, userDetails.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/status")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {
         if (requestService.isRequestPending(statusRequest)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PatchMapping("/{requestId}")
+    @PreAuthorize("hasAuthority('MANAGER')")
+    public ResponseEntity<?> deleteRequest(@PathVariable long requestId) {
+        requestService.softDeleteRequest(requestId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

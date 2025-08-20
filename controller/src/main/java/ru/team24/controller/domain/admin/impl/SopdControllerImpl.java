@@ -2,6 +2,7 @@ package ru.team24.controller.domain.admin.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.domain.admin.SopdController;
@@ -18,13 +19,13 @@ public class SopdControllerImpl implements SopdController {
     private final SopdService sopdService;
 
     @GetMapping("/recent")
-    @Override
     public ResponseEntity<SopdDto> getRecent() {
         var recentSopd = sopdService.findRecentSopd();
         return ResponseEntity.ok(recentSopd);
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<SopdDto> updateSopds(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody SopdUpdateRequest sopdUpdateRequest
@@ -36,13 +37,14 @@ public class SopdControllerImpl implements SopdController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteSopds(@PathVariable long id) {
         sopdService.deleteSopd(id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteSopdReal(@PathVariable long id) {
         sopdService.deleteSopdReal(id);
         return ResponseEntity.ok().build();

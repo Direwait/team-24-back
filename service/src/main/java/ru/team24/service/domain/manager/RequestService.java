@@ -6,6 +6,7 @@ import ru.team24.service.observ.action.ActionCreateRequest;
 import ru.team24.service.dto.request.RequestDto;
 
 import ru.team24.service.dto.request.RequestWithCandidateDto;
+import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 import java.util.List;
@@ -26,5 +27,10 @@ public interface RequestService {
     void deleteRequest(long requestId);
 
     void deleteRequestReal(long requestId);
+
+    void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException;
+
+    void softDeleteRequest(long requestId);
+
 
 }

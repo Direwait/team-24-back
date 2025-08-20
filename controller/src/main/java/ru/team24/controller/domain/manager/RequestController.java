@@ -24,6 +24,11 @@ public interface RequestController {
     )
     ResponseEntity<?> findByRequestId(long id);
 
+    @Operation(
+            summary = "Получение списка запросов-СОПД по статусу. Request State"
+    )
+    ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(String state);
+
 
     @Operation(
             summary = "Обновление запроса-СОПД по Id"
@@ -42,5 +47,4 @@ public interface RequestController {
             @RequestParam(required = false) String state,
             @PageableDefault Pageable pageable,
             PagedResourcesAssembler<RequestWithCandidateDto> assembler);
-
 }

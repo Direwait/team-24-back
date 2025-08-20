@@ -66,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setTo(action.getCandidateMail());
         helper.setSubject(action.getTemplateSubject());
 
-        String link = String.format(inviteLink + "?token=%s", action.getToken());
+        String link = String.format(inviteLink + "%s", action.getToken());
 
         String emailBody = action.getTemplateBody().replace("{token}", link);
 
