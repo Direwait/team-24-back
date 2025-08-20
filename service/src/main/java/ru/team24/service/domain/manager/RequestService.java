@@ -25,7 +25,7 @@ public interface RequestService {
 
     void updateRequest(CandidateResponse updateRequest);
 
-    Page<RequestWithCandidateDto> findRequests(Long userId, String state, Pageable pageable);
+    Page<RequestWithCandidateDto> findRequests(long userId, String state, Pageable pageable);
 
     void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException;
 

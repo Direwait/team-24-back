@@ -36,6 +36,7 @@ import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -77,33 +78,33 @@ public class RequestServiceImpl implements RequestService {
         return requests.stream().map(requestMapper::entityToDtoWithCandidate).toList();
     }
 
-    @Override
     public Page<RequestWithCandidateDto> findRequests(
-            Long userId,
+            long userId,
             String state,
             Pageable pageable) {
-
-        if (userId != null && state != null) {
-            throw new IllegalArgumentException("Use either userId OR state filter");
-        }
-        Page<Request> requestPage;
-
-        if (userId != null) {
-            requestPage = requestRepository.findAllByUser_UserId(userId, pageable);
-        }
-        else if (state != null) {
+        Page<Request> page;
+        if (state == null || state.isEmpty() || state.equalsIgnoreCase("all")) {
+            page = requestRepository.findAllByUser_UserIdAndRequestIsActiveOrderByRequestDate(
+                    userId,
+                    true,
+                    pageable);
+        } else {
+            RequestState requestState;
             try {
-                RequestState requestState = RequestState.valueOf(state.toUpperCase());
-                requestPage = requestRepository.findByRequestState(requestState, pageable);
+                requestState = RequestState.valueOf(state.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid state: " + state);
+                throw new IllegalArgumentException("Invalid request state: " + state +
+                        ". Valid values: " + Arrays.toString(RequestState.values()));
             }
+            page = requestRepository
+                    .findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
+                            userId,
+                            requestState,
+                            true,
+                            pageable
+                    );
         }
-        else {
-            requestPage = requestRepository.findAll(pageable);
-        }
-
-        return requestPage.map(requestMapper::entityToDtoWithCandidate);
+        return page.map(requestMapper::entityToDtoWithCandidate);
     }
 
     //todo

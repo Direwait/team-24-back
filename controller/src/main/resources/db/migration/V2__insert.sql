@@ -28,42 +28,113 @@ VALUES
 
 INSERT INTO templates (template_subject, template_body, user_id)
 VALUES
-    ('Приглашение на позицию Дворник',
-     '
-     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
-             <tr>
-                 <td style="padding: 40px; background: #ffffff; border-radius: 16px;">
-                     <h1 style="color: #20222c; font-size: 32px; margin: 0 0 20px 0; line-height: 1.2;">
-                         Привет!
-                     </h1>
-                     <p style="font-size: 16px; line-height: 1.5; margin: 0 0 16px 0; color: #333333;">
-                         Мы рады, что вы приняли наше предложение о работе в Т1!
-                     </p>
-                     <p style="font-size: 16px; line-height: 1.5; margin: 0 0 16px 0; color: #333333;">
-                         Заполнить регистрационные данные в нашей системе по ссылке:
-                         <a href="{token}" style="color: #1281E2; text-decoration: none; font-weight: 600;">ССЫЛКА</a>
-                     </p>
-                     <p style="font-size: 16px; line-height: 1.5; margin: 0; color: red;">
-                         Если у вас возникнут вопросы, обращайтесь – с радостью поможем!<br>
-                         С уважением, команда Холдинга Т1.
-                     </p>
-                 </td>
-             </tr>
-         </table>
-     ',
-     1),
     ('Ссылка на заполнение формы',
     '
-    <h1>Привет!</h1><div><br></div><div><br></div><div><br></div><div><br></div><p></p><div>Перейди пожалуйста по <a href="{token}">ссылке&nbsp;</a><br>С уважением, команда Холдинга Т1</div><div><br></div><div><br></div><div><br></div><div><br></div><div><br>---<br>Письмо отправлено автоматически из системы подбора персонала. Пожалуйста, не отвечайте на него.</div><p></p><p></p>
+    <div style="
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #f4f4f6;
+        padding: 20px;
+      ">
+    <div style="
+          margin: 30px;
+          text-align: center;
+        ">
+      <svg width="83" height="36" viewBox="0 0 83 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M72.7612 8.86615H53.9588V13.0406H61.2759V27.7503H65.4472V13.0438H72.7643V8.86615H72.7612Z"
+          fill="black"></path>
+        <path d="M80.9811 8.80324H76.6871V27.7063H80.9811V8.80324Z" fill="black"></path>
+        <path
+          d="M20.0881 15.1294H32.5517V21.5028H20.0881V34.0293H13.7493V21.5028H1.28572V15.1294H13.7493V2.60288H20.0881V15.1294ZM38.8748 2.57143V34.0293H45.2135V2.57143H38.8748Z"
+          fill="#12A5DF"></path>
+        <defs>
+          <clipPath id="clip0_555_597">
+            <rect width="79.7143" height="31.4579" fill="white" transform="translate(1.28572 2.57143)">
+            </rect>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+    <div style="
+          background: #FFF;
+          border-radius: 16px;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+          padding: 40px;
+          width: 100%;
+          max-width: 700px;
+        ">
+      <div style="
+            display: flex;
+            flex-direction: column;
+          ">
+        <div style="
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
+              line-height: 1.6;
+              color: #333;
+              ">
+          <h1>Привет!</h1>
 
+          <p>
+            Мы рады, что вы приняли наше предложение о работе в Т1!
+          </p>
+          <p>
+            Заполнить регистрационные данные в нашей системе по ссылке:
+            <a href="{token}">ССЫЛКА</a>
+          </p>
+
+          <p>
+            Если у вас возникнут вопросы, обращайтесь – с радостью поможем! С уважением, команда Холдинга
+            Т1.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
     ',
-    1);
+    3);
 
 -- 5. Затем SOPD (зависит от users)
 INSERT INTO sopd (user_id, sopd_text)
 VALUES
-    (1, 'Текст стандартной операционной процедуры 1'),
-    (2, 'Текст стандартной операционной процедуры 2');
+    (3, 'Текст стандартной операционной процедуры 1'),
+    (3, '<h1 class="greeting" >Привет!</h1>
+
+            <p style="
+                        font-size: 16px;
+  margin: 0;
+  text-align: justify;
+                      ">
+              ООО «ГК Иннотех» является разработчиком программного обеспечения для собственных нужд и партнеров.
+            </p>
+
+            <p style="
+                        font-size: 16px;
+  margin: 0;
+  text-align: justify;
+                      ">
+              При организации разработки программного обеспечения мы обрабатываем персональные данные лиц, приглашаемых к участию и/или участвующих в разработке ПО, включая как потенциальных кандидатов, так и собственных работников, и представителей сторонних подрядчиков.
+            </p>
+
+            <p style="
+                        font-size: 16px;
+  margin: 0;
+  text-align: justify;
+                      ">
+              Обработка персональных данных осуществляется на условиях политики конфиденциальности, с которой можно ознакомиться <a href="https://inno.tech/ru/data/privacy_policy/#navigation-id9" className={styles.link}>здесь</a>.
+            </p>
+
+            <p style="
+                        font-size: 16px;
+  margin: 0;
+  text-align: justify;
+                      ">
+              Для выполнения требований законодательства РФ в области обработки персональных данных, предлагаем Вам дать согласие на обработку персональных данных (<a href="https://air.inno.tech/docs/AIR_personal_data_agreement_20240904.docx" className={styles.link}>см. здесь</a>), нажав соответствующую кнопку ниже.
+            </p>');
 
 -- 6. Затем запросы (зависит от users, candidate, templates, sopd)
 INSERT INTO request (user_id, candidate_id, template_id, sopd_id, request_token, request_state)

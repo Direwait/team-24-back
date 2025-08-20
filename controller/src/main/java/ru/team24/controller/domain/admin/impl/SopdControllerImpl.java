@@ -19,7 +19,6 @@ public class SopdControllerImpl implements SopdController {
     private final SopdService sopdService;
 
     @GetMapping("/recent")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<SopdDto> getRecent() {
         var recentSopd = sopdService.findRecentSopd();
         return ResponseEntity.ok(recentSopd);

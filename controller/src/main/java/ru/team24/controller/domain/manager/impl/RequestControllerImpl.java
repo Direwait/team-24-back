@@ -96,7 +96,6 @@ public class RequestControllerImpl implements RequestController {
 
 
     @PostMapping("/status")
-    @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {
         if (requestService.isRequestPending(statusRequest)) {
             return new ResponseEntity<>(HttpStatus.OK);
