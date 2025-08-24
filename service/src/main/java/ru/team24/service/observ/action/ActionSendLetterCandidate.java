@@ -1,14 +1,16 @@
 package ru.team24.service.observ.action;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.team24.service.observ.ActionType;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Builder
-public class ActionSendLetterCandidate {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ActionSendLetterCandidate implements Serializable {
     private String templateSubject;
     private String templateBody;
 

@@ -1,0 +1,10 @@
+kafka:
+  topics:
+    manager-email: manager-emails
+    candidate-email: candidate-emails
+
+spring:
+  main:
+    web-application-type: none
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}

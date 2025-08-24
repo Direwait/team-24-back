@@ -25,12 +25,6 @@ public interface RequestController {
     ResponseEntity<?> findByRequestId(long id);
 
     @Operation(
-            summary = "Получение списка запросов-СОПД по статусу. Request State"
-    )
-    ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(String state);
-
-
-    @Operation(
             summary = "Обновление запроса-СОПД по Id"
     )
     ResponseEntity<?> updateRequestByRequestId(long requestId, RequestDto requestDto);

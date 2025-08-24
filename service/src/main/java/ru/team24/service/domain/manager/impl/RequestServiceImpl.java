@@ -7,6 +7,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -42,7 +46,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
-    private final ApplicationEventPublisher publisher;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     private final TemplateMapper templateMapper;
     private final CandidateMapper candidateMapper;
@@ -55,6 +59,9 @@ public class RequestServiceImpl implements RequestService {
     private final SopdRepository sopdRepository;
 
     private final TokenManager linkService;
+
+    private static final String MANAGER_EMAIL = "manager-emails";
+    private static final String CANDIDATE_EMAIL = "candidate-emails";
 
     @Override
     public RequestWithCandidateDto findByRequestId(long requestId) {
@@ -83,7 +90,7 @@ public class RequestServiceImpl implements RequestService {
                         ". Valid values: " + Arrays.toString(RequestState.values()));
             }
             page = requestRepository
-                    .findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
+                    .findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDate(
                             userId,
                             requestState,
                             true,
@@ -91,16 +98,6 @@ public class RequestServiceImpl implements RequestService {
                     );
         }
         return page.map(requestMapper::entityToDtoWithCandidate);
-    }
-
-    @Override
-    public void deleteRequest(long requestId) {
-        requestRepository.deleteById(requestId);
-    }
-
-    @Override
-    public void deleteRequestReal(long requestId) {
-        requestRepository.getReferenceById(requestId).setRequestIsActive(false);
     }
 
     @Override
@@ -149,7 +146,7 @@ public class RequestServiceImpl implements RequestService {
                 .actionType(ActionType.SEND)
                 .build();
 
-        publisher.publishEvent(letterManager);
+        kafkaTemplate.send(MANAGER_EMAIL, letterManager);
     }
 
     @EventListener
@@ -184,11 +181,12 @@ public class RequestServiceImpl implements RequestService {
                 .candidateMail(action.getCandidateMail())
                 .actionType(ActionType.SEND)
                 .build();
-        publisher.publishEvent(letterCandidate);
+
+        kafkaTemplate.send(CANDIDATE_EMAIL, letterCandidate);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException {
+    public void createRequests(RequestCreationRequest createRequest, Long userId) {
         var emails = createRequest.getEmails();
         for (var email : emails) {
             var candidate = new Candidate();
@@ -213,5 +211,15 @@ public class RequestServiceImpl implements RequestService {
         request.setRequestIsActive(false);
         requestRepository.save(request);
 
+    }
+
+    @Override
+    public void deleteRequest(long requestId) {
+        requestRepository.deleteById(requestId);
+    }
+
+    @Override
+    public void deleteRequestReal(long requestId) {
+        requestRepository.getReferenceById(requestId).setRequestIsActive(false);
     }
 }

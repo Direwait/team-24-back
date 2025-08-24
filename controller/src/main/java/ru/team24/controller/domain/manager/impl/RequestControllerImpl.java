@@ -23,8 +23,6 @@ import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 import ru.team24.service.security.UserDetailsImpl;
 
-import java.util.List;
-
 @RequestMapping("/api/v1/requests")
 @RestController
 @RequiredArgsConstructor
@@ -37,28 +35,6 @@ public class RequestControllerImpl implements RequestController {
         return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
     }
 
-    @Deprecated
-    @GetMapping("/getByUserId/{userId}")
-    @PreAuthorize("hasAuthority('MANAGER')")
-    public ResponseEntity<List<RequestWithCandidateDto>> getByUserId(
-            @PathVariable long userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String sort) {
-
-        return ResponseEntity.ok(requestService.getByUserId(userId));
-    }
-
-    @Deprecated
-    @GetMapping("/getByState/{requestState}")
-    @PreAuthorize("hasAuthority('MANAGER')")
-    public ResponseEntity<List<RequestWithCandidateDto>> getByRequestState(
-            @PathVariable String requestState) {
-        return ResponseEntity.ok(requestService.getByRequestState(requestState));
-    }
-
-    // todo
-    // перепроверить новую палидацию
     @GetMapping()
     @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<PagedModel<EntityModel<RequestWithCandidateDto>>> getRequests(
@@ -73,8 +49,6 @@ public class RequestControllerImpl implements RequestController {
         return ResponseEntity.ok(model);
     }
 
-    // todo
-    //это надо?
     public ResponseEntity<?> updateRequestByRequestId(long requestId, RequestDto requestDto) {
         return null;
     }

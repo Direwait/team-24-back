@@ -2,6 +2,7 @@ package ru.team24.service.security;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,8 +33,8 @@ public class TokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                   @NonNull HttpServletResponse response,
-                                   @NonNull FilterChain filterChain
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain
     )
             throws ServletException, IOException {
 
