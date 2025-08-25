@@ -28,8 +28,11 @@ public class Candidate implements Serializable {
     @Column(name = "candidate_father_name")
     private String candidateFatherName;
   
-    @Column(name = "candidate_mail", nullable = false, unique = true)
+    @Column(name = "candidate_mail", nullable = false)
     private String candidateMail;
+
+    @Column(name = "candidate_new_mail", nullable = false)
+    private String candidateNewMail;
 
     @Column(name = "candidate_birth_date", nullable = false)
     @JsonFormat(pattern = "dd.MM.yyyy")

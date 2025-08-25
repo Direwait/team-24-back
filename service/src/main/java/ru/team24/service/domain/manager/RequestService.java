@@ -1,20 +1,18 @@
 package ru.team24.service.domain.manager;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ru.team24.service.dto.request.RequestWithCandidateAndManagerDto;
 import ru.team24.service.observ.action.ActionCreateRequest;
-import ru.team24.service.dto.request.RequestDto;
 
 import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
-import java.util.List;
 
 public interface RequestService {
     RequestWithCandidateDto findByRequestId(long requestId);
-
-    void updateRequestByRequestId(long requestId, RequestDto request);
 
     boolean isRequestPending(RequestStatusRequest statusRequest);
 
@@ -22,15 +20,18 @@ public interface RequestService {
 
     Page<RequestWithCandidateDto> findRequests(long userId, String state, Pageable pageable);
 
-    void createRequestWithTokenByClient(ActionCreateRequest action);
+    public Page<RequestWithCandidateAndManagerDto> findDeletedRequests(Pageable pageable);
 
-    void deleteRequest(long requestId);
+    void createRequestWithTokenByClient(ActionCreateRequest action) throws JsonProcessingException;
 
-    void deleteRequestReal(long requestId);
+    void hardDeleteRequest(long requestId);
 
     void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException;
 
     void softDeleteRequest(long requestId);
 
+    void hardDeleteByRequestId(long requestId);
+
+    void hardDeleteAll();
 
 }

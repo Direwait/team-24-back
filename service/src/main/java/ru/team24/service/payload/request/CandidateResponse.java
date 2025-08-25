@@ -17,4 +17,5 @@ public class CandidateResponse {
 
     private RequestState requestState;
     private String requestToken;
+    private String candidateMail;
 }

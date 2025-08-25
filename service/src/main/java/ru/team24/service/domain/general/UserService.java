@@ -1,14 +1,18 @@
 package ru.team24.service.domain.general;
 
-import ru.team24.service.dto.UserDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import ru.team24.service.dto.user.UserDto;
+import ru.team24.service.dto.user.UserDtoWithRoleDto;
+import ru.team24.service.payload.request.AddNewUserRequest;
 
 public interface UserService {
     UserDto findByUserId(long userId);
-    List<UserDto> findAllUsers();
+    Page<UserDtoWithRoleDto> findUsers(String role, Pageable pageable);
 
     boolean existsByUserMail(String mail);
-    void addUser(UserDto userDto);
+    void addUser(AddNewUserRequest userRequest);
+
+    void softDeleteUserById(long userId);
 
 }

@@ -19,9 +19,4 @@ public class Role implements Serializable {
 
     @Column(name = "role_name")
     private String roleName;
-
-    private boolean viewingMyRequests = false;
-    private boolean viewingAllRequests = false;
-    private boolean creatingRequests = false;
-    private boolean creatingAdmins = false;
 }

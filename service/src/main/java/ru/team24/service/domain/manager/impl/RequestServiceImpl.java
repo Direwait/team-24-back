@@ -18,6 +18,7 @@ import ru.team24.database.domain.manager.entity.Request;
 import ru.team24.database.domain.manager.repository.CandidateRepository;
 import ru.team24.database.domain.general.repository.UserRepository;
 import ru.team24.database.domain.manager.repository.RequestRepository;
+import ru.team24.service.dto.request.RequestWithCandidateAndManagerDto;
 import ru.team24.service.observ.ActionType;
 import ru.team24.service.observ.action.ActionCreateRequest;
 import ru.team24.service.observ.action.ActionSendLetterCandidate;
@@ -93,24 +94,11 @@ public class RequestServiceImpl implements RequestService {
         return page.map(requestMapper::entityToDtoWithCandidate);
     }
 
-    @Override
-    public void deleteRequest(long requestId) {
-        requestRepository.deleteById(requestId);
+    public Page<RequestWithCandidateAndManagerDto> findDeletedRequests(
+            Pageable pageable) {
+        Page<Request> page = requestRepository.findAllByRequestIsActiveOrderByRequestDate(false, pageable);
+        return page.map(requestMapper::entityToDtoWithCandidateAndUser);
     }
-
-    @Override
-    public void deleteRequestReal(long requestId) {
-        requestRepository.getReferenceById(requestId).setRequestIsActive(false);
-    }
-
-    @Override
-    public void updateRequestByRequestId(long requestId, RequestDto request) {
-        request.setRequestId(requestId);
-        request.setRequestIsActive(true);
-        requestRepository.save(requestMapper.dtoToEntity(request));
-    }
-
-    @Override
     public boolean isRequestPending(RequestStatusRequest statusRequest) {
         var request = requestRepository.findByRequestToken(statusRequest.getToken()).orElseThrow();
         request.setRequestIsActive(true);
@@ -187,6 +175,10 @@ public class RequestServiceImpl implements RequestService {
         publisher.publishEvent(letterCandidate);
     }
 
+    public void hardDeleteRequest(long requestId) {
+
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     public void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException {
         var emails = createRequest.getEmails();
@@ -213,5 +205,14 @@ public class RequestServiceImpl implements RequestService {
         request.setRequestIsActive(false);
         requestRepository.save(request);
 
+    }
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void hardDeleteByRequestId(long requestId) {
+        requestRepository.deleteByRequestId(requestId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void hardDeleteAll() {
+        requestRepository.deleteAllByRequestIsActive(false);
     }
 }
