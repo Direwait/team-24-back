@@ -1,7 +1,6 @@
-package ru.team24.service.observ.action;
+package ru.team24.action;
 
 import lombok.*;
-import ru.team24.service.observ.ActionType;
 
 import java.io.Serializable;
 

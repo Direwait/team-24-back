@@ -8,9 +8,6 @@ public interface CandidateService {
     CandidateDto findCandidateById(long userId);
     List<CandidateDto> findAllCandidates();
 
-    void addCandidateByMail(List<String> mails);
-
     void addCandidateByMail(List<String> mails, long managerId);
 
-    void updateCandidateData(String token, CandidateDto updatedCandidateDto);
 }

@@ -3,11 +3,7 @@ server:
   address: 0.0.0.0
 spring:
   profiles:
-    active: default #активная конфигурация
-
-  config:
-    import: "optional:configserver:http://localhost:8888"  # URL Config Server
-    enabled: false
+    active: default
 
   application:
     name: team24

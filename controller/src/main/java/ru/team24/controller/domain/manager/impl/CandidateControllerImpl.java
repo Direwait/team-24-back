@@ -35,8 +35,7 @@ public class CandidateControllerImpl implements CandidateController {
         return new ResponseEntity<>(candidateService.findAllCandidates(),HttpStatus.OK);
     }
 
-    //тут длинная цепочка менеджера, логика добавление кандидата в приложение,
-    // комментарий можно удалить как и requestMapping  у каждого котроллера
+
     @PostMapping()
     @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<Map<String, String>> link(
