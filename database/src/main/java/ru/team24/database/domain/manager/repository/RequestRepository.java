@@ -10,7 +10,6 @@ import ru.team24.database.domain.manager.entity.Candidate;
 import ru.team24.database.domain.manager.entity.Request;
 import ru.team24.database.enums.RequestState;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,7 +24,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
 
     @EntityGraph(attributePaths = {"candidate"})
-    Page<Request> findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
+    Page<Request> findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDate(
             Long userId,
             RequestState requestState,
             boolean requestIsActive,

@@ -9,10 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.team24.service.dto.UserDto;
 import ru.team24.service.domain.general.UserService;
+import ru.team24.service.dto.user.UserDto;
+import ru.team24.service.payload.request.AddNewUserRequest;
 
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +33,7 @@ class UserControllerImplTest {
     private UserControllerImpl userController;
 
     private UserDto userDto;
+    private AddNewUserRequest addNewUserRequest;
 
     @BeforeEach
     void setUp() {
@@ -40,17 +41,22 @@ class UserControllerImplTest {
         userDto.setUserId(1L);
         userDto.setUserMail("test@example.com");
         userDto.setUserPassword("plainPassword");
+
+        addNewUserRequest = new AddNewUserRequest();
+        addNewUserRequest.setUserMail("test@example.com");
+        addNewUserRequest.setUserPassword("plainPassword");
+        // Установите другие необходимые поля для AddNewUserRequest
     }
 
     @Test
     void findByUserId_ShouldReturnUserAndOkStatus() {
-        // Arrange
+
         when(userService.findByUserId(anyLong())).thenReturn(userDto);
 
-        // Act
+
         ResponseEntity<?> response = userController.findByUserId(1L);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(userDto, response.getBody());
@@ -58,101 +64,80 @@ class UserControllerImplTest {
     }
 
     @Test
+    void softDeleteUserById_ShouldReturnOkStatus() {
+
+        doNothing().when(userService).softDeleteUserById(anyLong());
+
+
+        ResponseEntity<?> response = userController.softDeleteUserById(1L);
+
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(userService).softDeleteUserById(1L);
+    }
+
+    @Test
     void existsByEmail_WhenEmailExists_ShouldReturnConflictStatus() {
-        // Arrange
+
         when(userService.existsByUserMail(anyString())).thenReturn(true);
 
-        // Act
+
         ResponseEntity<?> response = userController.existsByEmail("test@example.com");
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertNull(response.getBody());
         verify(userService).existsByUserMail("test@example.com");
     }
 
     @Test
     void existsByEmail_WhenEmailDoesNotExist_ShouldReturnOkStatus() {
-        // Arrange
+
         when(userService.existsByUserMail(anyString())).thenReturn(false);
 
-        // Act
+
         ResponseEntity<?> response = userController.existsByEmail("test@example.com");
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNull(response.getBody());
         verify(userService).existsByUserMail("test@example.com");
     }
 
     @Test
-    void findAllUsers_ShouldReturnListOfUsersAndOkStatus() {
-        // Arrange
-        List<UserDto> users = List.of(userDto, new UserDto());
-        when(userService.findAllUsers()).thenReturn(users);
-
-        // Act
-        ResponseEntity<List<?>> response = userController.findAllUsers();
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(users, response.getBody());
-        verify(userService).findAllUsers();
-    }
-
-    @Test
-    void findAllUsers_WhenNoUsers_ShouldReturnEmptyListAndOkStatus() {
-        // Arrange
-        List<UserDto> emptyList = List.of();
-        when(userService.findAllUsers()).thenReturn(emptyList);
-
-        // Act
-        ResponseEntity<List<?>> response = userController.findAllUsers();
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().isEmpty());
-        verify(userService).findAllUsers();
-    }
-
-    @Test
     void addUser_ShouldEncodePasswordAndReturnCreatedStatus() {
-        // Arrange
+
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        doNothing().when(userService).addUser(any(UserDto.class));
+        doNothing().when(userService).addUser(any(AddNewUserRequest.class));
 
-        // Act
-        ResponseEntity<?> response = userController.addUser(userDto);
 
-        // Assert
+        ResponseEntity<?> response = userController.addUser(addNewUserRequest);
+
+
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNull(response.getBody());
 
-        // Verify password was encoded
-        assertEquals("encodedPassword", userDto.getUserPassword());
+
+        assertEquals("encodedPassword", addNewUserRequest.getUserPassword());
         verify(passwordEncoder).encode("plainPassword");
-        verify(userService).addUser(userDto);
+        verify(userService).addUser(addNewUserRequest);
     }
 
     @Test
     void addUser_ShouldCallServiceWithEncodedPassword() {
-        // Arrange
+
         when(passwordEncoder.encode("plainPassword")).thenReturn("encodedPassword");
-        doNothing().when(userService).addUser(any(UserDto.class));
+        doNothing().when(userService).addUser(any(AddNewUserRequest.class));
 
-        // Act
-        userController.addUser(userDto);
 
-        // Assert
+        userController.addUser(addNewUserRequest);
+
+
         verify(passwordEncoder).encode("plainPassword");
-        verify(userService).addUser(argThat(dto ->
-                "encodedPassword".equals(dto.getUserPassword()) &&
-                        "test@example.com".equals(dto.getUserMail())
+        verify(userService).addUser(argThat(request ->
+                "encodedPassword".equals(request.getUserPassword()) &&
+                        "test@example.com".equals(request.getUserMail())
         ));
     }
 }

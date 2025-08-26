@@ -26,7 +26,7 @@ public interface RequestService {
 
     void hardDeleteRequest(long requestId);
 
-    void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException;
+    void createRequests(RequestCreationRequest createRequest, Long userId);
 
     void softDeleteRequest(long requestId);
 

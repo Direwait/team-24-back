@@ -34,13 +34,12 @@ class RequestControllerImplTest {
 
     @Test
     void findByRequestId_WithNonExistentId_ShouldReturnOkWithNull() {
-        // Arrange
         when(requestService.findByRequestId(anyLong())).thenReturn(null);
 
-        // Act
+
         ResponseEntity<?> response = requestController.findByRequestId(999L);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
@@ -49,14 +48,13 @@ class RequestControllerImplTest {
 
     @Test
     void updateRequest_ShouldCallServiceAndReturnOk() {
-        // Arrange
         CandidateResponse candidateResponse = new CandidateResponse();
         doNothing().when(requestService).updateRequest(any(CandidateResponse.class));
 
-        // Act
+
         ResponseEntity<?> response = requestController.updateRequest(candidateResponse);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(requestService).updateRequest(candidateResponse);
@@ -64,14 +62,14 @@ class RequestControllerImplTest {
 
     @Test
     void getRequests_WithStatusRequest_WhenRequestPending_ShouldReturnOk() {
-        // Arrange
+
         RequestStatusRequest statusRequest = new RequestStatusRequest();
         when(requestService.isRequestPending(any(RequestStatusRequest.class))).thenReturn(true);
 
-        // Act
+
         ResponseEntity<?> response = requestController.getRequests(statusRequest);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(requestService).isRequestPending(statusRequest);
@@ -79,14 +77,14 @@ class RequestControllerImplTest {
 
     @Test
     void getRequests_WithStatusRequest_WhenRequestNotPending_ShouldReturnNotFound() {
-        // Arrange
+
         RequestStatusRequest statusRequest = new RequestStatusRequest();
         when(requestService.isRequestPending(any(RequestStatusRequest.class))).thenReturn(false);
 
-        // Act
+
         ResponseEntity<?> response = requestController.getRequests(statusRequest);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         verify(requestService).isRequestPending(statusRequest);
@@ -94,22 +92,15 @@ class RequestControllerImplTest {
 
     @Test
     void deleteRequest_ShouldCallSoftDeleteAndReturnOk() {
-        // Arrange
+
         doNothing().when(requestService).softDeleteRequest(anyLong());
 
-        // Act
+
         ResponseEntity<?> response = requestController.deleteRequest(1L);
 
-        // Assert
+
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(requestService).softDeleteRequest(1L);
-    }
-
-    @Test
-    void updateRequestByRequestId_ShouldReturnNull() {
-        // This method returns null in the implementation
-        ResponseEntity<?> response = requestController.updateRequestByRequestId(1L, new RequestDto());
-        assertNull(response);
     }
 }

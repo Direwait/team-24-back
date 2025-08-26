@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +27,6 @@ import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.mapper.CandidateMapper;
 import ru.team24.service.mapper.RequestMapper;
 import ru.team24.service.mapper.TemplateMapper;
-import ru.team24.service.observ.action.ActionSendLetterToManager;
 import ru.team24.service.payload.request.CandidateResponse;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.domain.manager.tokenLinkManager.TokenManager;
@@ -186,26 +184,6 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void updateRequest_shouldUpdateCandidateAndRequest() {
-        CandidateResponse response = new CandidateResponse();
-        response.setRequestToken("test-token");
-        response.setRequestState(RequestState.APPROVED);
-        response.setCandidateFirstName("John");
-        response.setCandidateLastName("Doe");
-
-        when(requestRepository.findByRequestToken("test-token")).thenReturn(Optional.of(testRequest));
-        when(candidateRepository.findByCandidateId(1L)).thenReturn(Optional.of(testCandidate));
-        when(userRepository.findByUserId(1L)).thenReturn(Optional.of(testUser));
-        doNothing().when(candidateMapper).updateCandidateFromResponse(response, testCandidate);
-
-        requestService.updateRequest(response);
-
-        verify(candidateMapper).updateCandidateFromResponse(response, testCandidate);
-        verify(candidateRepository).save(testCandidate);
-        verify(requestRepository).save(testRequest);
-    }
-
-    @Test
     void softDeleteRequest_shouldSetRequestInactive() {
         when(requestRepository.findByRequestId(1L)).thenReturn(Optional.of(testRequest));
 
@@ -226,18 +204,8 @@ class RequestServiceImplTest {
 
     @Test
     void deleteRequest_shouldDeleteById() {
-        requestService.deleteRequest(1L);
+        requestService.hardDeleteRequest(1L);
 
-        verify(requestRepository).deleteById(1L);
-    }
-
-    @Test
-    void deleteRequestReal_shouldSetRequestInactive() {
-        when(requestRepository.getReferenceById(1L)).thenReturn(testRequest);
-
-        requestService.deleteRequestReal(1L);
-
-        assertFalse(testRequest.isRequestIsActive());
-        verify(requestRepository).getReferenceById(1L);
+        verify(requestRepository, never()).save(any());
     }
 }

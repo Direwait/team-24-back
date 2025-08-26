@@ -37,7 +37,6 @@ import ru.team24.service.payload.request.CandidateResponse;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -84,7 +83,7 @@ public class RequestServiceImpl implements RequestService {
                         ". Valid values: " + Arrays.toString(RequestState.values()));
             }
             page = requestRepository
-                    .findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDateDesc(
+                    .findAllByUser_UserIdAndRequestStateAndRequestIsActiveOrderByRequestDate(
                             userId,
                             requestState,
                             true,
@@ -180,7 +179,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void createRequests(RequestCreationRequest createRequest, Long userId) throws JsonProcessingException {
+    public void createRequests(RequestCreationRequest createRequest, Long userId) {
         var emails = createRequest.getEmails();
         for (var email : emails) {
             var candidate = new Candidate();

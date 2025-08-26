@@ -3,6 +3,8 @@ server:
   address: 0.0.0.0
 
 spring:
+  main:
+    web-application-type: none
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 
