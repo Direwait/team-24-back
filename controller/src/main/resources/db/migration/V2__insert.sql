@@ -2,11 +2,11 @@
 -- Вставка тестовых данных с соблюдением порядка зависимостей
 
 -- 1. Сначала вставляем роли (нет зависимостей)
-INSERT INTO roles (role_name, viewing_my_requests, viewing_all_requests, creating_requests, creating_admins)
+INSERT INTO roles (role_name)
 VALUES
-    ('ADMIN', TRUE, TRUE, TRUE, TRUE),
-    ('MANAGER', TRUE, FALSE, TRUE, FALSE),
-    ('SUPER_ADMIN', TRUE, TRUE, TRUE, TRUE);
+    ('ADMIN'),
+    ('MANAGER'),
+    ('SUPER_ADMIN');
 
 -- 2. Затем пользователей (зависит от roles)
 INSERT INTO users (role_id, user_mail, user_password, user_first_name, user_last_name, user_is_active)
@@ -14,9 +14,10 @@ VALUES
     (1, 'admin@example.com', '$2a$04$gDtS8LWULFmjx5L5Grcjn./ysrrZSLNqqmOiHe9EsYUZtsIJm0aXm', 'Иван', 'Петров', true),
     (2, 'manager@example.com', '$2a$10$qCQY8X3t6SYsMlz5vJ4NUe8YgZRb0N5DdQ2XUzYJg7cV1hQ9LbK0O', 'Анна', 'Сидорова', true),
     (1, 'admin@mail.ru','$2a$10$Yay7Hy2bSG2wk0h.52shielt.fYS0lXP9CnMwXnIgTJcXu3pnzs4y', 'admin_first_name','admin_last_name', true),
+    (2, 'kirill789234@gmail.com','$2a$10$jbO7qo9pRXkRapl6YVkO7.WHOnT9DxR/tbIrzb6M5.3l807Ln1TZ.', 'manager_first_name','manager_last_name', true),
     (2, 'manager@mail.ru','$2a$10$jbO7qo9pRXkRapl6YVkO7.WHOnT9DxR/tbIrzb6M5.3l807Ln1TZ.', 'manager_first_name','manager_last_name', true),
     (1, 'admin2@mail.ru','$2a$10$Yay7Hy2bSG2wk0h.52shielt.fYS0lXP9CnMwXnIgTJcXu3pnzs4y', 'admin_first_name','admin_last_name', true),
-    (2, 'manager2@mail.ru','$2a$10$jbO7qo9pRXkRapl6YVkO7.WHOnT9DxR/tbIrzb6M5.3l807Ln1TZ.', 'manager_first_name','manager_last_name', true);
+    (3, 'superadmin@mail.ru','$2a$10$Q5yU.YKwKiPoB9kKWBw2xuaGyeBL8qOTLU8obf7.KcHklBgWG47ke', 'superadmin_first_name','superadmin_last_name', true);
 
 
 
@@ -98,7 +99,6 @@ VALUES
     ',
     3);
 
-
 -- 5. Затем SOPD (зависит от users)
 INSERT INTO sopd (user_id, sopd_text)
 VALUES
@@ -140,11 +140,5 @@ VALUES
 -- 6. Затем запросы (зависит от users, candidate, templates, sopd)
 INSERT INTO request (user_id, candidate_id, template_id, sopd_id, request_token, request_state)
 VALUES
-    (4, 1, 1, 1, 'token123', 'PENDING'),
-    (4, 2, 1, NULL, 'token456', 'APPROVED');
-
--- 7. Затем уведомления (зависит от request)
-INSERT INTO notification (request_id, notification_text, notification_state)
-VALUES
-    (1, 'Ваш запрос получен', 'SENT'),
-    (2, 'Ваш запрос одобрен', 'READ');
+    (4, 1, 1, 1, 'token123', 'APPROVED'),
+    (5, 2, 1, 1, 'token456', 'PENDING');

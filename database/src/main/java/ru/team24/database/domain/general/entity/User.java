@@ -22,7 +22,6 @@ public class User implements Serializable {
     @JoinColumn(name="role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 
-
     @Column(name = "user_mail", nullable = false, unique = true)
     private String userMail;
 
@@ -34,6 +33,9 @@ public class User implements Serializable {
 
     @Column(name = "user_last_name", nullable = false)
     private String userLastName;
+
+    @Column(name = "user_father_name")
+    private String userFatherName;
 
     @Column(name = "user_created_at")
     private Date userCreatedAt = new Date();

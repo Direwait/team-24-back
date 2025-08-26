@@ -1,11 +1,7 @@
 -- Создание таблицы Roles (роли пользователей)
 CREATE TABLE if not exists roles (
     role_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    role_name VARCHAR(50) NOT NULL,
-    viewing_my_requests BOOLEAN DEFAULT FALSE,
-    viewing_all_Requests BOOLEAN DEFAULT FALSE,
-    creating_Requests BOOLEAN DEFAULT FALSE,
-    creating_Admins BOOLEAN DEFAULT FALSE
+    role_name VARCHAR(50) NOT NULL
 );
 
 -- Создание таблицы User (пользователи)
@@ -16,6 +12,7 @@ CREATE TABLE if not exists users (
     user_password VARCHAR(255) NOT NULL,
     user_first_name VARCHAR(50) NOT NULL,
     user_last_name VARCHAR(50) NOT NULL,
+    user_father_name VARCHAR(50),
     user_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_is_active BOOLEAN DEFAULT TRUE
 );
@@ -27,6 +24,7 @@ CREATE TABLE if not exists candidate (
     candidate_last_name VARCHAR(50),
     candidate_father_name VARCHAR(50),
     candidate_mail VARCHAR(100),
+    candidate_new_mail VARCHAR(100),
     candidate_birth_date DATE,
     candidate_phone VARCHAR(20),
     candidate_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -13,7 +13,7 @@ import org.springframework.util.StopWatch;
 @Slf4j
 public class ServiceLoggingAspect {
 
-    @Pointcut("within(ru.team24.service..*)")
+    @Pointcut("within(ru.team24.service.*)")
     public void allServices() {}
 
     @Around("allServices()")

@@ -12,5 +12,5 @@ import java.util.Set;
 public class EmailsDto {
 
     @NotEmpty(message = "Список emails не может быть пустым")
-    Set<String> emails;
+    List<String> emails;
 }

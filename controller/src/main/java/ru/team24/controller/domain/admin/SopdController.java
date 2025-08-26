@@ -13,7 +13,10 @@ public interface SopdController {
 
     ResponseEntity<SopdDto> getRecent();
 
-    ResponseEntity<SopdDto> updateSopds(
+    ResponseEntity<SopdDto> getForCandidate();
+
+
+        ResponseEntity<SopdDto> updateSopds(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody SopdUpdateRequest sopdUpdateRequest
     );
