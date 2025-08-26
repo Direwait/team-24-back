@@ -15,13 +15,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.team24.controller.domain.manager.RequestController;
-import ru.team24.service.dto.request.RequestDto;
 import ru.team24.service.domain.manager.RequestService;
+import ru.team24.service.dto.request.RequestWithCandidateAndManagerDto;
 import ru.team24.service.dto.request.RequestWithCandidateDto;
 import ru.team24.service.payload.request.RequestCreationRequest;
 import ru.team24.service.payload.request.RequestStatusRequest;
 import ru.team24.service.payload.request.CandidateResponse;
 import ru.team24.service.security.UserDetailsImpl;
+
+import java.util.List;
 
 @RequestMapping("/api/v1/requests")
 @RestController
@@ -33,6 +35,20 @@ public class RequestControllerImpl implements RequestController {
     @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<?> findByRequestId(@PathVariable long requestId) {
         return new ResponseEntity<>(requestService.findByRequestId(requestId), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{requestId}")
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
+    public ResponseEntity<?> hardDeleteByRequestId(@PathVariable long requestId) {
+        requestService.hardDeleteByRequestId(requestId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/all")
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
+    public ResponseEntity<?> hardDeleteAll() {
+        requestService.hardDeleteAll();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping()
@@ -49,8 +65,14 @@ public class RequestControllerImpl implements RequestController {
         return ResponseEntity.ok(model);
     }
 
-    public ResponseEntity<?> updateRequestByRequestId(long requestId, RequestDto requestDto) {
-        return null;
+    @GetMapping("/deleted")
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
+    public ResponseEntity<PagedModel<EntityModel<RequestWithCandidateAndManagerDto>>> getDeletedRequests(
+            Pageable pageable,
+            PagedResourcesAssembler<RequestWithCandidateAndManagerDto> assembler) {
+        Page<RequestWithCandidateAndManagerDto> currentPage = requestService.findDeletedRequests(pageable);
+        PagedModel<EntityModel<RequestWithCandidateAndManagerDto>> model = assembler.toModel(currentPage);
+        return ResponseEntity.ok(model);
     }
 
     @PatchMapping()
@@ -58,7 +80,6 @@ public class RequestControllerImpl implements RequestController {
         requestService.updateRequest(requestUpdate);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @PostMapping()
     @PreAuthorize("hasAuthority('MANAGER')")
@@ -68,6 +89,7 @@ public class RequestControllerImpl implements RequestController {
         requestService.createRequests(createRequest, userDetails.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @PostMapping("/status")
     public ResponseEntity<?> getRequests(@RequestBody RequestStatusRequest statusRequest) {

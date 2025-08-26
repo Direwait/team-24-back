@@ -17,16 +17,22 @@ public interface CandidateMapper {
     CandidateDto entityToDto(Candidate entity);
 
     @Mapping(target = "candidateId", ignore = true)
+    void updateFromDto(CandidateDto candidateDto, @MappingTarget Candidate candidate);
+
+    @Mapping(target = "candidateId", ignore = true)
     @Mapping(target = "candidateFirstName", ignore = true)
     @Mapping(target = "candidateLastName", ignore = true)
     @Mapping(target = "candidateFatherName", ignore = true)
     @Mapping(target = "candidateBirthDate", ignore = true)
     @Mapping(target = "candidatePhone", ignore = true)
     @Mapping(target = "candidateCreatedAt", ignore = true)
-    void mailToEntity(String candidateMail, @MappingTarget Candidate candidate);
+    @Mapping(target = "candidateNewMail", ignore = true)
+    Candidate mailToEntity(String candidateMail, @MappingTarget Candidate candidate);
 
 
     @Mapping(target = "candidateId", ignore = true)
     @Mapping(target = "candidateCreatedAt", ignore = true)
+    @Mapping(source = "candidateMail", target = "candidateNewMail")
+    @Mapping(target = "candidateMail", ignore = true)
     void updateCandidateFromResponse(CandidateResponse dto, @MappingTarget Candidate candidate);
 }

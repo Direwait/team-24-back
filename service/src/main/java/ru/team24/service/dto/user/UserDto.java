@@ -1,4 +1,4 @@
-package ru.team24.service.dto;
+package ru.team24.service.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +25,8 @@ public class UserDto {
     private String userFirstName;
 
     private String userLastName;
+
+    private String userFatherName;
 
     private Date userCreatedAt;
 

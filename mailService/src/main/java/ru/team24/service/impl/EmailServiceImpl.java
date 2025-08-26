@@ -29,7 +29,7 @@ public class EmailServiceImpl implements EmailService {
     private String emailFrom;
 
     @Value("${app.link.url}")
-    private String inviteLink;
+    private String frontendLink;
 
     private final JavaMailSender mailSender;
 
@@ -60,7 +60,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setTo(action.getCandidateMail());
         helper.setSubject(action.getTemplateSubject());
 
-        String link = String.format(inviteLink + "%s", action.getToken());
+        String link = String.format(frontendLink + "/registration/%s", action.getToken());
 
         String emailBody = action.getTemplateBody().replace("{token}", link);
 
